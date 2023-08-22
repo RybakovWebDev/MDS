@@ -1,0 +1,93 @@
+body {
+  background-color: #333333;
+  overflow-x: hidden;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+  transition: opacity 300ms;
+}
+
+a:hover {
+  opacity: 0.5;
+}
+
+.app {
+  min-height: 100vh;
+  max-width: 108rem;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Roboto", sans-serif;
+}
+
+.home {
+  width: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
+.popular-slideshow {
+  position: fixed;
+  width: 150rem;
+  height: 60rem;
+  margin: 12vh 0 0 0;
+  z-index: -5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  mask: linear-gradient(to right, #0000, #000 30%, #000 70%, #0000);
+  overflow: hidden;
+}
+
+.popular-slideshow__wrapper {
+  mask: linear-gradient(180deg, #0000, #000 30% 100%, #0000);
+  height: 60rem;
+  display: flex;
+}
+
+.popular-slideshow__images-wrapper {
+  display: flex;
+  animation: slideShowScroll 80s linear infinite;
+}
+
+.popular-slideshow__image {
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+.hidden {
+  display: none;
+  opacity: 0;
+  transition: 300ms;
+}
+
+.error-parent-cont {
+  color: white;
+  margin: auto;
+}
+
+.link-no-hover:hover {
+  cursor: default;
+  opacity: 1;
+}

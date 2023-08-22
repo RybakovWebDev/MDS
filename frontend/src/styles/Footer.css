@@ -1,0 +1,26 @@
+.footer {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 3rem 0 0 0;
+  background-color: #333333;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: -1;
+}
+
+.footer__home {
+  position: fixed;
+  height: 30vh;
+  mask: linear-gradient(180deg, #0000 0%, #000 65%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.footer__copyright {
+  font-size: 16px;
+  font-weight: 100;
+  opacity: 0.3;
+}

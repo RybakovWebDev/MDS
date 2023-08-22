@@ -1,0 +1,72 @@
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideShowScroll {
+  0% {
+    transform: translate(-52.5rem);
+  }
+  100% {
+    transform: translate(-852.5rem);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 500ms;
+}
+
+.fade-out {
+  animation: fadeIn 500ms reverse;
+}
+
+.item {
+  transition: max-height 300ms ease-in-out, opacity 300ms ease-in-out;
+  max-height: 50rem;
+  opacity: 1;
+}
+
+.item-enter {
+  max-height: 0;
+  opacity: 0;
+}
+
+.item-enter-active {
+  max-height: 50rem;
+  opacity: 1;
+}
+
+.item-exit {
+  max-height: 50rem;
+  opacity: 1;
+}
+
+.item-exit-active {
+  max-height: 0;
+  opacity: 0;
+}
+
+.item.dragging {
+  transition: none;
+}
+
+.message-user-enter {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.message-chatbot-enter {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.message-user-enter-active,
+.message-chatbot-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 500ms, transform 500ms;
+}
