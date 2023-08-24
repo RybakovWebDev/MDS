@@ -15,7 +15,6 @@ export const updateUser = async (userToken, userID, update, dispatchUser) => {
     const patchedUser = await axios.patch(`${process.env.REACT_APP_URI}/api/users/${userID}`, update, {
       headers: { Authorization: `Bearer ${userToken}` },
     });
-    console.log(patchedUser.data);
     const localUser = JSON.parse(localStorage.getItem("user"));
     localUser.name = patchedUser.data.name;
     localUser.image = patchedUser.data.image;
@@ -56,12 +55,10 @@ export const postWatchlist = async (userToken, userID, dispatchWatchlists, dispa
 };
 
 export const getWatchlists = async (userToken, userID, dispatchWatchlists, dispatchUser) => {
-  console.log("This is the userToken: ", userToken);
   try {
     const watchlists = await axios.get(`${process.env.REACT_APP_URI}/api/watchlists/${userID}`, {
       headers: { Authorization: `Bearer ${userToken}` },
     });
-    console.log(watchlists);
     dispatchWatchlists({ type: "SET_WATCHLISTS", payload: watchlists.data });
     dispatchWatchlists({ type: "SET_LOADING", payload: false });
   } catch (err) {

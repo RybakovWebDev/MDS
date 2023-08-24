@@ -1,7 +1,6 @@
 import axios from "axios";
 
 export const uploadImage = async (userToken, userID, file) => {
-  console.log("File and userID sent: ", file, userID);
   try {
     const formData = new FormData();
     formData.append("fileInput", file);
@@ -20,7 +19,6 @@ export const uploadImage = async (userToken, userID, file) => {
 };
 
 export const deleteImage = async (userToken, userID, fileName) => {
-  console.log(userID, fileName);
   try {
     const uploadResponse = await axios.delete(`${process.env.REACT_APP_URI}/api/upload/${userID}/${fileName}`, {
       headers: {

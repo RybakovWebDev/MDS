@@ -70,23 +70,22 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
       inputRef.current.value = null;
       updateUser(user.token, user.id, { name: name }, dispatchUser);
       if (file) {
-        console.log("Upload start");
-
         setIsUploading(true);
         const newImage = await uploadImage(user.token, user.id, file);
         inputRef.current.value = null;
         updateUser(user.token, user.id, { image: newImage?.location ? newImage?.location : "" }, dispatchUser);
         setIsUploading(false);
-        console.log("Upload end, new image: ", newImage);
       }
       if (!image && user.image) {
         const fileName = user.image.split("/").slice(-1)[0];
-        await deleteImage(user.token, user.id, fileName);
-        updateUser(user.token, user.id, { image: "" }, dispatchUser);
+        const deleteImageResult = await deleteImage(user.token, user.id, fileName);
+        deleteImageResult.message =
+          "File deleted successfully" && updateUser(user.token, user.id, { image: "" }, dispatchUser);
       }
       setEdit(false);
       handleErrorPopper();
     } catch (err) {
+      console.error(err);
       setIsUploading(false);
       setFile(null);
       setImage(user.image);

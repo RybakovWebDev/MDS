@@ -22,36 +22,17 @@ const roleToAssume = {
 };
 
 const getS3 = async () => {
-  // console.log("Start of getS3 function");
-  // console.log("STS should be this: ", sts);
   try {
     const data = await sts.send(new AssumeRoleCommand(roleToAssume));
-    // console.log("AWS role data is:", data);
     const creds = {
       accessKeyId: data.Credentials.AccessKeyId,
       secretAccessKey: data.Credentials.SecretAccessKey,
       sessionToken: data.Credentials.SessionToken,
     };
-    return new S3Client({ ...creds, region: process.env.ENV_AWS_REGION });
+    return new S3Client({ credentials: creds, region: process.env.ENV_AWS_REGION });
   } catch (err) {
     console.log(err);
     throw new Error("Failed to initialize s3 object");
-  }
-};
-
-const deleteFileFromS3 = async (s3, userID, fileName) => {
-  console.log("Data in deleteFileFromS3: ", userID, fileName);
-  try {
-    await s3.send(
-      new DeleteObjectCommand({
-        Bucket: process.env.S3_BUCKET,
-        Key: `${userID}/${fileName}`,
-      })
-    );
-    console.log(`File deleted successfully: ${fileName}`);
-  } catch (err) {
-    console.log(err);
-    throw new Error("Failed to delete file.");
   }
 };
 
@@ -111,6 +92,22 @@ const uploadFileToS3 = async (s3, file, userID) => {
   }
 };
 
+const deleteFileFromS3 = async (s3, userID, fileName) => {
+  console.log("Data in deleteFileFromS3: ", userID, fileName);
+  try {
+    await s3.send(
+      new DeleteObjectCommand({
+        Bucket: process.env.S3_BUCKET,
+        Key: `${userID}/${fileName}`,
+      })
+    );
+    console.log(`File deleted successfully: ${fileName}`);
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to delete file.");
+  }
+};
+
 const uploadFile = async (req, res) => {
   try {
     const s3 = await getS3();
@@ -134,6 +131,7 @@ const deleteFile = async (req, res) => {
   try {
     const s3 = await getS3();
     await deleteFileFromS3(s3, userID, fileName);
+    res.status(200).json({ message: "File deleted successfully" });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err.message });
