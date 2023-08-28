@@ -18,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use(express.json());
-
+console.log("This is the mongo uri: ", process.env.MONG_URI);
 app.use((req, res, next) => {
   console.log(req.path, req.method);
   next();
