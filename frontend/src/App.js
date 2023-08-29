@@ -37,6 +37,8 @@ function App() {
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1279px)" });
 
+  console.log("This is the backend link: ", process.env.REACT_APP_URI);
+
   function handleProviderChange(e) {
     setMovieProvider(e.currentTarget.value);
   }
