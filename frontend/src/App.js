@@ -37,8 +37,6 @@ function App() {
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1279px)" });
 
-  console.log("This is the backend link: ", process.env.REACT_APP_URI);
-
   function handleProviderChange(e) {
     setMovieProvider(e.currentTarget.value);
   }
@@ -58,8 +56,6 @@ function App() {
     const getTMDBConfig = async () => {
       try {
         const resTMDBConfig = await axios.get(`https://api.themoviedb.org/3/configuration?api_key=${tmdbAPI}`);
-        console.log("TMDB config response is: ", resTMDBConfig);
-        console.log("TMDB config data is: ", resTMDBConfig.data);
         setTMDBConfig(resTMDBConfig.data);
       } catch (err) {
         console.log(err);
@@ -77,7 +73,6 @@ function App() {
         const resTMDBPopular = await axios.get(
           `https://api.themoviedb.org/3/movie/popular?api_key=${tmdbAPI}&language=en-US&page=1`
         );
-        console.log("Popular data:", resTMDBPopular.data.results);
         setPopularTMDB(resTMDBPopular.data.results);
       } catch (err) {
         console.log("Error getting popular movies.", err);
@@ -91,8 +86,6 @@ function App() {
 
     try {
       const responseTMDB = await axios.get(reqTMDB);
-      console.log("Search TMDB response: ", responseTMDB);
-      console.log("Search TMDB result: ", responseTMDB.data.results);
       return responseTMDB;
     } catch (err) {
       console.error(err);
@@ -115,9 +108,6 @@ function App() {
       if (!titleIDs.imdb_id) throw new Error("No IMDB ID found");
 
       const resOMDB = await axios.get(`http://www.omdbapi.com/?i=${titleIDs.imdb_id}&apikey=${omdbAPI}`);
-      console.log("resOMDB is", resOMDB);
-      console.log("OMDB response status is: ", resOMDB?.status);
-      console.log("resOMDB Data is: ", resOMDB.data);
 
       return resOMDB;
     } catch (err) {
@@ -147,7 +137,6 @@ function App() {
 
     try {
       const resTMDB = await searchTMDB(movName);
-      console.log("TMDB response is: ", resTMDB);
       if (resTMDB.data.results.length === 0 && !resTMDBid) throw new Error("No movies found");
       const TMDBid = resTMDBid ? resTMDBid : resTMDB.data.results[0].id;
 
