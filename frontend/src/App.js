@@ -107,7 +107,7 @@ function App() {
     try {
       if (!titleIDs.imdb_id) throw new Error("No IMDB ID found");
 
-      const resOMDB = await axios.get(`http://www.omdbapi.com/?i=${titleIDs.imdb_id}&apikey=${omdbAPI}`);
+      const resOMDB = await axios.get(`https://www.omdbapi.com/?i=${titleIDs.imdb_id}&apikey=${omdbAPI}`);
 
       return resOMDB;
     } catch (err) {
