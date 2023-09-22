@@ -76,7 +76,6 @@ export const postWatchlist = async (userToken, userID, dispatchWatchlists, dispa
       }
     );
     dispatchWatchlists({ type: "CREATE_WATCHLIST", payload: response.data });
-    console.log("New watchlist data received: ", response.data);
     return response.data;
   } catch (err) {
     console.error("Can't create new list: ", err);

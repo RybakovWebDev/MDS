@@ -27,7 +27,7 @@ import { WhiteSpinner } from "../Utility/StyledComponents/StyledComponentsUtilit
 
 import { useWatchlistContext } from "../../hooks/useWatchlistContext";
 import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import { deleteWatchlist, patchWatchlist } from "../../services/CRUDService";
+import { deleteWatchlist, patchWatchlist } from "../../services/CrudService";
 import { useAuthContext } from "../../hooks/useAuthContext";
 
 const WatchlistSingle = ({ props, user, watchlist }) => {

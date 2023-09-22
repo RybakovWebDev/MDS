@@ -4,7 +4,7 @@ import axios from "axios";
 import FinalView from "./FinalView";
 import { useAuthContext } from "./hooks/useAuthContext";
 import { useWatchlistContext } from "./hooks/useWatchlistContext";
-import { getWatchlists } from "./services/CRUDService";
+import { getWatchlists } from "./services/CrudService";
 import { handleScrollShadow } from "./utilities/utilities";
 import { useMediaQuery } from "react-responsive";
 import { useAuth } from "./hooks/useAuth";

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { DialogContent, DialogTitle, ListItemText, Typography } from "@mui/material";
 
 import { useWatchlistContext } from "../../hooks/useWatchlistContext";
-import { patchWatchlist, postWatchlist } from "../../services/CRUDService";
+import { patchWatchlist, postWatchlist } from "../../services/CrudService";
 import {
   FadeIcon,
   StyledButtonSmall,

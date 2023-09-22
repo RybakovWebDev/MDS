@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { WhiteSpinner } from "../components/Utility/StyledComponents/StyledComponentsUtility";
 import WatchlistSingle from "../components/Watchlists/WatchlistSingle";
-import { getSingleWatchlist } from "../services/CRUDService";
+import { getSingleWatchlist } from "../services/CrudService";
 import { useWatchlistContext } from "../hooks/useWatchlistContext";
 import { Typography } from "@mui/material";
 

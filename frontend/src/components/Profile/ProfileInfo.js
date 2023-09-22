@@ -4,7 +4,7 @@ import { Check, Clear, Edit } from "@mui/icons-material";
 import { Fade, Tooltip, Typography } from "@mui/material";
 
 import ProfileDeletion from "./ProfileDeletion";
-import { updateUser } from "../../services/CRUDService";
+import { updateUser } from "../../services/CrudService";
 import { deleteImage, uploadImage } from "../../services/S3Service";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { ErrorPopper } from "../Utility/Errors";

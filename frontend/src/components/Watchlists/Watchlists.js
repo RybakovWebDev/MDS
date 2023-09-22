@@ -21,7 +21,7 @@ import WatchlistsControlsNew from "./WatchlistsControlsNew";
 import WatchlistsControlsEdit from "./WatchlistsControlsEdit";
 import SortableAccordionItem from "./SortableAccordionItem";
 import SortableTitleItem from "./SortableTitleItem";
-import { deleteWatchlist, patchWatchlist, postWatchlist, updateUser } from "../../services/CRUDService";
+import { deleteWatchlist, patchWatchlist, postWatchlist, updateUser } from "../../services/CrudService";
 
 import { useWatchlistContext } from "../../hooks/useWatchlistContext";
 import { useAuthContext } from "../../hooks/useAuthContext";

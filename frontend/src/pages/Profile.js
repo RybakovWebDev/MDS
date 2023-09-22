@@ -9,7 +9,7 @@ import { AuthContext } from "../context/AuthContext";
 import { WhiteSpinner } from "../components/Utility/StyledComponents/StyledComponentsUtility";
 import { useWatchlistContext } from "../hooks/useWatchlistContext";
 import { useAuthContext } from "../hooks/useAuthContext";
-import { getWatchlists } from "../services/CRUDService";
+import { getWatchlists } from "../services/CrudService";
 
 const Profile = ({ props, user, personPlaceholder, setOnHomePage, isTabletOrMobile }) => {
   const { dispatchWatchlists } = useWatchlistContext();
