@@ -38,19 +38,16 @@ export const deleteUser = async (userToken, userID, dispatchUser) => {
   }
 };
 
-export const postWatchlist = async (userToken, userID, dispatchWatchlists, dispatchUser) => {
+export const getSingleWatchlist = async (watchlistID, dispatchWatchlists) => {
   try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_URI}/api/watchlists`,
-      { id: userID },
-      {
-        headers: { Authorization: `Bearer ${userToken}` },
-      }
-    );
-    dispatchWatchlists({ type: "CREATE_WATCHLIST", payload: response.data });
-    return response.data;
+    const watchlist = await axios.get(`${process.env.REACT_APP_URI}/api/watchlists/single/${watchlistID}`);
+
+    dispatchWatchlists({ type: "SET_LOADING", payload: false });
+    return watchlist.data;
   } catch (err) {
-    console.log("Can't delete user: ", err);
+    console.error("Error getting watchlists: ", err);
+    dispatchWatchlists({ type: "SET_LOADING", payload: false });
+    return err;
   }
 };
 
@@ -62,10 +59,27 @@ export const getWatchlists = async (userToken, userID, dispatchWatchlists, dispa
     dispatchWatchlists({ type: "SET_WATCHLISTS", payload: watchlists.data });
     dispatchWatchlists({ type: "SET_LOADING", payload: false });
   } catch (err) {
-    console.log("Error getting watchlists: ", err);
+    console.error("Error getting watchlists: ", err);
     dispatchWatchlists({ type: "SET_LOADING", payload: false });
     (err.response.status === 401 || err.response.data.error === "No such user found.") &&
       dispatchUser({ type: "LOGOUT_USER" });
+  }
+};
+
+export const postWatchlist = async (userToken, userID, dispatchWatchlists, dispatchUser) => {
+  try {
+    const response = await axios.post(
+      `${process.env.REACT_APP_URI}/api/watchlists`,
+      { id: userID },
+      {
+        headers: { Authorization: `Bearer ${userToken}` },
+      }
+    );
+    dispatchWatchlists({ type: "CREATE_WATCHLIST", payload: response.data });
+    console.log("New watchlist data received: ", response.data);
+    return response.data;
+  } catch (err) {
+    console.error("Can't create new list: ", err);
   }
 };
 
@@ -76,7 +90,7 @@ export const patchWatchlist = async (userToken, listID, update, dispatchWatchlis
     });
     dispatchWatchlists({ type: "PATCH_WATCHLIST", payload: response.data });
   } catch (err) {
-    console.log("Can't patch list: ", err);
+    console.error("Can't update list: ", err);
     err.response.status === 401 && dispatchUser({ type: "LOGOUT_USER" });
   }
 };
@@ -88,7 +102,7 @@ export const deleteWatchlist = async (userToken, listID, dispatchWatchlists, dis
     });
     dispatchWatchlists({ type: "DELETE_WATCHLIST", payload: response.data });
   } catch (err) {
-    console.log("Can't delete list: ", err);
+    console.error("Can't delete list: ", err);
     err.response.status === 401 && dispatchUser({ type: "LOGOUT_USER" });
   }
 };

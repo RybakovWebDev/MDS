@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAuthContext } from "./useAuthContext";
-import { loginUser, createUser } from "../services/CrudService";
+import { loginUser, createUser } from "../services/CRUDService";
 
 export const useAuth = () => {
   const [authError, setAuthError] = useState(null);

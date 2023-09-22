@@ -48,7 +48,6 @@ const verifyUser = async (req, res, next) => {
     return res.status(401).json({ error: "No authorization header" });
   }
   const token = authHeader.split(" ")[1];
-  console.log("Verifying, got this as token: ", token);
 
   try {
     jwt.verify(token, process.env.SECRET);
@@ -76,7 +75,6 @@ const createUser = [
     }
 
     const { email, password } = req.body;
-    console.log("Input signup data is: ", email, password);
 
     try {
       const user = await User.signup(email, password);
@@ -99,7 +97,6 @@ const loginUser = [
     }
 
     const { email, password } = req.body;
-    console.log("Input login data is: ", email, password);
 
     try {
       const user = await User.login(email, password);

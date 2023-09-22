@@ -14,7 +14,6 @@ const context = [
 ];
 
 const truncateResponse = (response) => {
-  console.log("Response in the truncateResponse function: ", response);
   let truncatedResponse = response;
 
   if (truncatedResponse.slice(-1) !== "." && !/\d/.test(truncatedResponse.slice(-1))) {
@@ -27,7 +26,6 @@ const truncateResponse = (response) => {
     }
     truncatedResponse = lines.join("\n");
   }
-  console.log("This is the truncated response: ", truncatedResponse);
   return truncatedResponse.trim();
 };
 
@@ -48,15 +46,10 @@ const postMessage = async (req, res) => {
       messages: context,
     });
 
-    console.log("OpenAI response data: ", response.data);
-    console.log("OpenAI response text: ", response.data.choices[0].message.content);
-    console.log("OpenAI response data choices: ", response.data.choices[0]);
-
     const chatbotResponse = response.data.choices[0].message.content;
     const reason = response.data.choices[0].finish_reason;
     const truncatedResponse = truncateResponse(chatbotResponse);
     context.push({ role: "system", content: reason === "stop" ? chatbotResponse : truncatedResponse });
-    console.log("This is the context array: ", context);
     res.status(200).json({ chatbotResponse: reason === "stop" ? chatbotResponse : truncatedResponse });
   } catch (error) {
     console.error("This is the error: ", error);

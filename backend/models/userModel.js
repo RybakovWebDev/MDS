@@ -29,7 +29,6 @@ userSchema.statics.signup = async function (email, password) {
   const exists = await this.findOne({ email });
 
   if (exists) {
-    console.log("Email in use");
     throw Error("Email already in use");
   }
 
@@ -40,7 +39,6 @@ userSchema.statics.signup = async function (email, password) {
   const user = await this.create({ email, password: hashPassword });
 
   const userData = { id: user._id, name: user.name, date: user.date };
-  console.log("Signed up new user: ", userData);
   return userData;
 };
 
@@ -51,7 +49,6 @@ userSchema.statics.login = async function (email, password) {
 
   const user = await this.findOne({ email });
   if (!user) {
-    console.log("No such user");
     throw Error("No such email");
   }
 

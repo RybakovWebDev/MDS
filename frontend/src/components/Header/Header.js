@@ -51,7 +51,15 @@ const Header = ({
                 clearMovData();
               }}
             >
-              <Link underline='none' variant='h5' color='white' component={RouterLink} to='/' className='header__link'>
+              <Link
+                underline='none'
+                variant='h5'
+                color='white'
+                component={RouterLink}
+                to='/'
+                className='header__link'
+                sx={{ fontFamily: "Montserrat" }}
+              >
                 MDS
               </Link>
             </div>

@@ -1,5 +1,6 @@
 const express = require("express");
 const {
+  getWatchlist,
   getWatchlistsUser,
   postWatchlist,
   deleteWatchlist,
@@ -9,6 +10,7 @@ const { verifyUser } = require("../controllers/userController");
 
 const router = express.Router();
 
+router.get("/single/:id", getWatchlist);
 router.get("/:id", verifyUser, getWatchlistsUser);
 router.post("/", verifyUser, postWatchlist);
 router.delete("/:id", verifyUser, deleteWatchlist);

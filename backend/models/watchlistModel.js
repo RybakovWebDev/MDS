@@ -19,7 +19,6 @@ watchlistSchema.statics.addWatchlist = async function (id) {
     name: `Watchlist ${maxWatchlistNumber + 1}`,
     author: mongoose.Types.ObjectId(id),
   });
-  console.log("Created watchlist:", watchlist);
   return watchlist;
 };
 

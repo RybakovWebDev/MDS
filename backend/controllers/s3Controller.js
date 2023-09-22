@@ -37,7 +37,6 @@ const getS3 = async () => {
 };
 
 const uploadFileToS3 = async (s3, file, userID) => {
-  // console.log("Starting the uploadFileToS3 function");
   const fileContent = file.buffer;
   const fileName = crypto.createHash("sha256").update(fileContent).digest("hex");
   let oldFileName;
@@ -66,7 +65,6 @@ const uploadFileToS3 = async (s3, file, userID) => {
       })
     );
     const location = `https://${process.env.S3_BUCKET}.s3.amazonaws.com/${userID}/${fileName}`;
-    console.log(`File already exists in S3 bucket. ${location}`);
     return location;
   } catch (err) {
     if (err.code !== "NotFound" && err.message !== "UnknownError") {
@@ -93,7 +91,6 @@ const uploadFileToS3 = async (s3, file, userID) => {
 };
 
 const deleteFileFromS3 = async (s3, userID, fileName) => {
-  console.log("Data in deleteFileFromS3: ", userID, fileName);
   try {
     await s3.send(
       new DeleteObjectCommand({
@@ -101,7 +98,6 @@ const deleteFileFromS3 = async (s3, userID, fileName) => {
         Key: `${userID}/${fileName}`,
       })
     );
-    console.log(`File deleted successfully: ${fileName}`);
   } catch (err) {
     console.log(err);
     throw new Error("Failed to delete file.");
@@ -118,7 +114,6 @@ const uploadFile = async (req, res) => {
     if (oldFileName) {
       await deleteFileFromS3(s3, userID, oldFileName);
     }
-    console.log("Location data: ", location);
     res.status(200).json({ location });
   } catch (err) {
     console.log(err);

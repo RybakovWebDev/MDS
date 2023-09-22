@@ -69,99 +69,6 @@
   align-items: center;
 }
 
-.watchlists {
-  width: 65%;
-}
-
-.watchlists ol {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.watchlist-accordion {
-  margin: 1rem 0 1rem 0;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.watchlist-accordion__titles li {
-  display: flex;
-  align-items: center;
-}
-
-.watchlist-accordion__entry {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.watchlist-accordion__entry-content {
-  display: flex;
-  align-items: center;
-}
-
-.watchlist-accordion__entry-img-cont-icon,
-.watchlist-accordion__entry-img-cont-details {
-  width: 6rem;
-  height: 100px;
-  display: flex;
-  justify-content: center;
-  transition: height 100ms ease-in-out, width 100ms ease-in-out, margin 100ms ease-in-out;
-}
-
-.watchlist-accordion__entry-img-cont-icon {
-  height: 100px;
-}
-
-.watchlist-accordion__entry-img-cont-details {
-  margin: 0 0 0 1rem;
-  width: 2rem;
-  height: 50px;
-}
-
-.watchlists__controls-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.watchlists__titles-controls-wrapper {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  margin: 0 1rem 0 0;
-  /* padding: 0 1rem 1rem 0; */
-  width: calc(100% - 1rem);
-  display: flex;
-  justify-content: flex-end;
-  background-color: #222222;
-}
-
-.watchlists__modal-controls-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.watchlist-accordion__details::-webkit-scrollbar {
-  width: 20px;
-}
-
-.watchlist-accordion__details::-webkit-scrollbar-thumb {
-  background: rgb(136, 136, 136);
-  border-radius: 10px;
-  height: 50px;
-  border: 5px #222222 solid;
-}
-
-.watchlist-accordion__details ::-webkit-scrollbar-thumb:hover {
-  background: rgba(87, 87, 87, 0.5);
-}
-
 @media (max-width: 1279px) {
   .profile {
     min-height: 70rem;
@@ -201,6 +108,7 @@
 
   .profile__personal-info {
     margin: 0;
+    padding: 0 2rem 0 2rem;
     grid-column: 2 / 4;
     grid-row: 1 / 3;
     color: white;

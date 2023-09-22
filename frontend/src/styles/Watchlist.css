@@ -1,0 +1,215 @@
+.watchlist-single {
+  margin: 2rem 0 0 0;
+  min-height: 60rem;
+  width: 60%;
+  min-width: 50rem;
+  max-width: 70rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.watchlist-single__name-wrapper {
+  margin: 0 0 2rem 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.watchlist-single-wrapper,
+.watchlist-single--view-cells {
+  width: 100%;
+}
+
+.watchlist-single--view-cells {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.watchlist-single__titles-controls-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.watchlists {
+  width: 65%;
+}
+
+.watchlists ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.watchlist-accordion {
+  margin: 1rem 0 1rem 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.watchlist-accordion__titles li {
+  display: flex;
+  align-items: center;
+}
+
+.watchlist-accordion__entry {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.watchlist-accordion__entry-content {
+  display: flex;
+  align-items: center;
+}
+
+.watchlist-accordion__entry-img-cont-large,
+.watchlist-accordion__entry-img-cont-small,
+.watchlist-accordion__entry-img-cont-cells {
+  width: 6rem;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  transition: height 100ms ease-in-out, width 100ms ease-in-out, margin 100ms ease-in-out;
+}
+
+.watchlist-accordion__entry-img-cont-cells {
+  margin: 2rem 0 0 0;
+  width: 9rem;
+}
+
+.watchlist-accordion__entry-img-cont-cells img {
+  box-shadow: 0px 0px 10px rgb(0, 0, 0, 0.5);
+  scale: 1;
+  transition: 100ms linear;
+}
+
+.watchlist-accordion__entry-img-cont-cells img:hover {
+  margin: 0 0 1rem 0;
+  box-shadow: 0px 15px 10px rgb(0, 0, 0, 0.5);
+  scale: 1.2;
+}
+
+.watchlist-accordion__entry-img-cont-large {
+  height: 100px;
+}
+
+.watchlist-accordion__entry-img-cont-small {
+  margin: 0 0 0 1rem;
+  width: 2rem;
+  height: 50px;
+}
+
+.watchlist-accordion__entry-img-cont-cells {
+  height: 200px;
+}
+
+.watchlists__controls-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.watchlists__titles-controls-wrapper {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 0 1rem 0 0;
+  width: calc(100% - 1rem);
+  display: flex;
+  justify-content: flex-end;
+  background-color: #222222;
+}
+
+.watchlists__modal-controls-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.watchlist-accordion__details::-webkit-scrollbar {
+  width: 20px;
+}
+
+.watchlist-accordion__details::-webkit-scrollbar-thumb {
+  background: rgb(136, 136, 136);
+  border-radius: 10px;
+  height: 50px;
+  border: 5px #222222 solid;
+}
+
+.watchlist-accordion__details ::-webkit-scrollbar-thumb:hover {
+  background: rgba(87, 87, 87, 0.5);
+}
+
+@media (max-width: 1279px) {
+  .watchlists {
+    width: 90%;
+  }
+
+  .watchlist-accordion {
+    margin: 1rem 0 1rem 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .watchlist-accordion__titles li {
+    display: flex;
+    align-items: center;
+  }
+
+  .watchlist-accordion__entry {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .watchlist-accordion__entry-content {
+    display: flex;
+    align-items: center;
+  }
+
+  .watchlist-accordion__entry-img-cont-large,
+  .watchlist-accordion__entry-img-cont-small {
+    margin: 0 0 0 1rem;
+    width: auto;
+    height: 100px;
+    display: flex;
+    justify-content: flex-start;
+    transition: height 100ms ease-in-out, width 100ms ease-in-out, margin 100ms ease-in-out;
+  }
+
+  .watchlist-accordion__entry-img-cont-large {
+    height: calc(100vh / 8);
+    max-height: 100px;
+  }
+
+  .watchlist-accordion__entry-img-cont-small {
+    width: 2rem;
+    height: 50px;
+  }
+
+  .watchlists__controls-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .watchlists__titles-controls-wrapper {
+    bottom: -1px;
+  }
+
+  .watchlists__modal-controls-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+}

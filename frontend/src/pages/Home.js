@@ -8,6 +8,7 @@ import { WhiteSpinner } from "../components/Utility/StyledComponents/StyledCompo
 
 const Home = ({
   props,
+  showMov,
   TMDBConfigData,
   TMDBImageBaseURL,
   personPlaceholder,
@@ -19,7 +20,7 @@ const Home = ({
 }) => {
   useEffect(() => {
     setOnHomePage(true);
-  }, [setOnHomePage]);
+  }, [setOnHomePage, setShowPopular]);
 
   return (
     <section className='home'>
@@ -49,6 +50,7 @@ const Home = ({
 
       <div className='popular-slideshow'>
         <PopularSlideshow
+          showMov={showMov}
           showPopular={showPopular}
           setShowPopular={setShowPopular}
           posters={props.popularTMDB}

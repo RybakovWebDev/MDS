@@ -36,7 +36,6 @@ export const AuthContextProvider = ({ children }) => {
   });
   useEffect(() => {
     const localUser = JSON.parse(localStorage.getItem("user"));
-    console.log("This is the localUser const:", localUser);
     const verify = async () => {
       try {
         await axios.post(

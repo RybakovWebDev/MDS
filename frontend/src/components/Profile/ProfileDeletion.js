@@ -3,7 +3,7 @@ import { useState } from "react";
 import { DeleteForever } from "@mui/icons-material";
 
 import ConfirmDialog from "../Utility/ConfirmDialog";
-import { deleteUser } from "../../services/CrudService";
+import { deleteUser } from "../../services/CRUDService";
 import { useAuthContext } from "../../hooks/useAuthContext";
 
 import { StyledButton } from "../Utility/StyledComponents/StyledComponentsUtility";

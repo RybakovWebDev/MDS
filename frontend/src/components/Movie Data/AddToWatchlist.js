@@ -4,16 +4,18 @@ import React, { useState } from "react";
 import { DialogContent, DialogTitle, ListItemText, Typography } from "@mui/material";
 
 import { useWatchlistContext } from "../../hooks/useWatchlistContext";
-import { patchWatchlist, postWatchlist } from "../../services/CrudService";
+import { patchWatchlist, postWatchlist } from "../../services/CRUDService";
 import {
   FadeIcon,
   StyledButtonSmall,
   StyledDialog,
   WhiteAddIcon,
 } from "../Utility/StyledComponents/StyledComponentsUtility";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
-const ListSelectDialog = ({ userID, open, handleListDialog, userWatchlists, titleDataTMDB, titlePosterOMDB }) => {
+const ListSelectDialog = ({ user, open, handleListDialog, userWatchlists, titleDataTMDB, titlePosterOMDB }) => {
   const { dispatchWatchlists } = useWatchlistContext();
+  const { dispatchUser } = useAuthContext();
 
   const titleToAdd = {
     imdbID: titleDataTMDB?.imdb_id,
@@ -30,7 +32,7 @@ const ListSelectDialog = ({ userID, open, handleListDialog, userWatchlists, titl
           ? [...selectedWatchlist.titles.filter((t) => t.imdbID !== titleDataTMDB.imdb_id)]
           : [...selectedWatchlist.titles, titleToAdd],
       };
-      patchWatchlist(value, update, dispatchWatchlists);
+      patchWatchlist(user.token, value, update, dispatchWatchlists, dispatchUser);
     } catch (err) {
       console.error("Can't add new title to the watchlist. Error.", err);
     }
@@ -38,8 +40,8 @@ const ListSelectDialog = ({ userID, open, handleListDialog, userWatchlists, titl
 
   const handleListItemNew = async (e, value) => {
     const update = { titles: [titleToAdd] };
-    const newList = await postWatchlist(userID, dispatchWatchlists);
-    patchWatchlist(newList._id, update, dispatchWatchlists);
+    const newList = await postWatchlist(user.token, user.id, dispatchWatchlists, dispatchUser);
+    patchWatchlist(user.token, newList._id, update, dispatchWatchlists, dispatchUser);
   };
 
   return (
@@ -88,7 +90,7 @@ const ListSelectDialog = ({ userID, open, handleListDialog, userWatchlists, titl
 };
 
 const AddToWatchlist = (propsAddToWatchlist) => {
-  const { userID, userWatchlists, titleDataTMDB, titlePosterOMDB } = propsAddToWatchlist;
+  const { user, userWatchlists, titleDataTMDB, titlePosterOMDB } = propsAddToWatchlist;
   const [openDialog, setOpenDialog] = useState(false);
 
   const handleListDialog = () => {
@@ -108,7 +110,7 @@ const AddToWatchlist = (propsAddToWatchlist) => {
         Add to list
       </Button>
       <ListSelectDialog
-        userID={userID}
+        user={user}
         open={openDialog}
         handleListDialog={handleListDialog}
         userWatchlists={userWatchlists}

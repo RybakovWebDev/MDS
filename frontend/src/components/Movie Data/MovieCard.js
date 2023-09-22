@@ -125,7 +125,7 @@ const MovieCard = ({ props, personPlaceholder, TMDBConfigData, TMDBImageBaseURL,
 
             {props.user && (
               <AddToWatchlist
-                userID={props.user?.id}
+                user={props.user}
                 userWatchlists={props.watchlists}
                 titleDataTMDB={props.movDataTMDB}
                 titlePosterOMDB={props.movData?.Poster}

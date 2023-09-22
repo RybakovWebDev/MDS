@@ -1,9 +1,9 @@
 import React, { createRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Box, Typography } from "@mui/joy";
-import { Clear, CropSquare, ExpandMore, List } from "@mui/icons-material";
-import { Accordion, ButtonGroup, Fade, Tooltip } from "@mui/material";
+import { Clear, ExpandMore } from "@mui/icons-material";
+import { Accordion, Fade } from "@mui/material";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import {
   DndContext,
@@ -21,7 +21,7 @@ import WatchlistsControlsNew from "./WatchlistsControlsNew";
 import WatchlistsControlsEdit from "./WatchlistsControlsEdit";
 import SortableAccordionItem from "./SortableAccordionItem";
 import SortableTitleItem from "./SortableTitleItem";
-import { deleteWatchlist, patchWatchlist, postWatchlist, updateUser } from "../../services/CrudService";
+import { deleteWatchlist, patchWatchlist, postWatchlist, updateUser } from "../../services/CRUDService";
 
 import { useWatchlistContext } from "../../hooks/useWatchlistContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
@@ -32,21 +32,21 @@ import {
   StyledWatchlistNameInput,
   StyledWatchlistTitleRemoveButton,
   StyledWatchlistTitleText,
-} from "../Utility/StyledComponents/StyledComponentsProfile";
-import { StyledButton, WhiteSpinner } from "../Utility/StyledComponents/StyledComponentsUtility";
+} from "../Utility/StyledComponents/StyledComponentsWatchlist";
+import { WhiteSpinner } from "../Utility/StyledComponents/StyledComponentsUtility";
+import WatchlistsControlsView from "./WatchlistsControlsView";
 
-const WatchLists = ({ props, userWatchlists, user }) => {
+const Watchlists = ({ props, userWatchlists, user }) => {
   const [expandedAccordions, setExpandedAccordions] = useState([]);
   const [editList, setEditList] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [listName, setListName] = useState("");
   const [listCopy, setListCopy] = useState({});
-  const [listView, setListView] = useState("icon");
+  const [listView, setListView] = useState("large");
 
   const { isLoading, dispatchWatchlists } = useWatchlistContext();
   const { dispatchUser } = useAuthContext();
-
-  console.log(userWatchlists);
+  const navigate = useNavigate();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -67,7 +67,9 @@ const WatchLists = ({ props, userWatchlists, user }) => {
 
   const handleAccordionExpandState = (listID) => {
     if (!expandedAccordions.includes(listID)) {
-      setExpandedAccordions([...expandedAccordions, listID]);
+      setTimeout(() => {
+        setExpandedAccordions([...expandedAccordions, listID]);
+      }, 200);
     } else {
       setExpandedAccordions(expandedAccordions.filter((a) => a !== listID));
     }
@@ -75,8 +77,8 @@ const WatchLists = ({ props, userWatchlists, user }) => {
 
   const listViewHandler = (e) => {
     const id = e.currentTarget.id;
-    if (id === "listViewIconBtn") setListView("icon");
-    if (id === "listViewDetailsBtn") setListView("details");
+    if (id === "listViewLargeBtn") setListView("large");
+    if (id === "listViewSmallBtn") setListView("small");
   };
 
   const handleDeleteDialog = (listID) => {
@@ -91,6 +93,10 @@ const WatchLists = ({ props, userWatchlists, user }) => {
         setExpandedAccordions(expandedAccordions.filter((a) => a !== listID));
       }, 300);
     }
+  };
+
+  const handleWatchlistOpen = (listID) => {
+    navigate(`/watchlist/${listID}`);
   };
 
   const handleWatchlistEdit = (listID) => {
@@ -175,13 +181,7 @@ const WatchLists = ({ props, userWatchlists, user }) => {
             props.getMovieData(el.title, el.imdbID);
           }}
         >
-          <div
-            className={
-              listView === "icon"
-                ? "watchlist-accordion__entry-img-cont-icon"
-                : "watchlist-accordion__entry-img-cont-details"
-            }
-          >
+          <div className={`watchlist-accordion__entry-img-cont-${listView}`}>
             <img src={el.poster} alt='Watchlist entry poster' />
           </div>
           <StyledWatchlistTitleText>
@@ -285,8 +285,10 @@ const WatchLists = ({ props, userWatchlists, user }) => {
           <WatchlistsControlsEdit
             expandedAccordions={expandedAccordions}
             editList={editList}
+            showControls={expandedAccordions.includes(l._id)}
             handleDeleteDialog={handleDeleteDialog}
             handleDialogConfirm={handleDialogConfirm}
+            handleWatchlistOpen={handleWatchlistOpen}
             handleWatchlistEdit={handleWatchlistEdit}
             handleWatchlistCancel={handleWatchlistCancel}
             handleWatchlistSave={handleWatchlistSave}
@@ -341,27 +343,10 @@ const WatchLists = ({ props, userWatchlists, user }) => {
     <Fade in={!isLoading} timeout={500}>
       <article className='watchlists'>
         <div className='profile__section-name-wrapper'>
-          <Typography sx={{ fontSize: "30px", fontWeight: "800", color: "#fff", fontFamily: "Roboto" }}>
+          <Typography sx={{ fontSize: "30px", fontWeight: "600", color: "#fff", fontFamily: "Inter" }}>
             Watchlists
           </Typography>
-          <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }} title='List view settings'>
-            <ButtonGroup sx={{ ml: "2rem", height: "35px" }}>
-              <StyledButton
-                id='listViewIconBtn'
-                onClick={listViewHandler}
-                sx={{ width: "10px", backgroundColor: `${listView === "icon" && "#222222"}` }}
-              >
-                <CropSquare />
-              </StyledButton>
-              <StyledButton
-                id='listViewDetailsBtn'
-                onClick={listViewHandler}
-                sx={{ width: "10px", backgroundColor: `${listView === "details" && "#222222"}` }}
-              >
-                <List />
-              </StyledButton>
-            </ButtonGroup>
-          </Tooltip>
+          <WatchlistsControlsView listViewHandler={listViewHandler} listView={listView} cellsView={false} />
         </div>
 
         {userWatchlists && userWatchlists.length !== 0 ? (
@@ -377,4 +362,4 @@ const WatchLists = ({ props, userWatchlists, user }) => {
   );
 };
 
-export default WatchLists;
+export default Watchlists;

@@ -2,6 +2,7 @@ import { Fade } from "@mui/material";
 import { useEffect, useState } from "react";
 
 const PopularSlideshow = ({
+  showMov,
   showPopular,
   setShowPopular,
   posters,
@@ -14,8 +15,8 @@ const PopularSlideshow = ({
   const combinedArr = Array.isArray(posters) ? [...posters, ...firstHalf] : null;
 
   useEffect(() => {
-    if (loadedImages > 10) setShowPopular(true);
-  }, [loadedImages, setShowPopular]);
+    if (loadedImages > 10 && !showMov) setShowPopular(true);
+  }, [loadedImages, setShowPopular, showMov]);
 
   const posterLoadHandler = () => {
     setLoadedImages((prev) => prev + 1);

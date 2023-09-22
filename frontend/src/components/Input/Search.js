@@ -36,15 +36,12 @@ const Search = ({ TMDBConfigData, getMovieData, searchMov, handleInputFocus, sea
       setOptions([]);
     } else {
       const searchResults = await searchMov(value);
-      console.log(searchResults.data.results);
       setOptions(searchResults.data.results.sort((a, b) => b.vote_count - a.vote_count));
-      console.log(options);
     }
   };
 
   const handleSearchButtonClick = () => {
     if (searchInput) {
-      console.log(searchInput);
       getMovieData(searchInput);
     }
   };

@@ -3,12 +3,17 @@ import { useNavigate } from "react-router-dom";
 
 import { Divider } from "@mui/joy";
 
-import WatchLists from "../components/Profile/WatchLists";
+import Watchlists from "../components/Watchlists/Watchlists";
 import ProfileInfo from "../components/Profile/ProfileInfo";
 import { AuthContext } from "../context/AuthContext";
 import { WhiteSpinner } from "../components/Utility/StyledComponents/StyledComponentsUtility";
+import { useWatchlistContext } from "../hooks/useWatchlistContext";
+import { useAuthContext } from "../hooks/useAuthContext";
+import { getWatchlists } from "../services/CRUDService";
 
-const Profile = ({ props, personPlaceholder, setOnHomePage, isTabletOrMobile }) => {
+const Profile = ({ props, user, personPlaceholder, setOnHomePage, isTabletOrMobile }) => {
+  const { dispatchWatchlists } = useWatchlistContext();
+  const { dispatchUser } = useAuthContext();
   const navigate = useNavigate();
   const { isLoading } = useContext(AuthContext);
 
@@ -18,6 +23,12 @@ const Profile = ({ props, personPlaceholder, setOnHomePage, isTabletOrMobile }) 
       navigate("/");
     }
   }, [props.user, navigate, isLoading, setOnHomePage]);
+
+  useEffect(() => {
+    if (user) {
+      getWatchlists(user.token, user.id, dispatchWatchlists, dispatchUser);
+    }
+  }, [user, dispatchWatchlists, dispatchUser]);
 
   return (
     <section className='profile'>
@@ -33,7 +44,7 @@ const Profile = ({ props, personPlaceholder, setOnHomePage, isTabletOrMobile }) 
           />
           <Divider sx={{ width: "65%", alignSelf: "center", bgcolor: "rgb(65, 65, 65)" }} />
 
-          <WatchLists props={props} userWatchlists={props.watchlists} user={props.user} />
+          <Watchlists props={props} userWatchlists={props.watchlists} user={props.user} />
         </>
       ) : (
         <WhiteSpinner />

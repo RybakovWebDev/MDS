@@ -91,3 +91,7 @@ a:hover {
   cursor: default;
   opacity: 1;
 }
+
+.link-no-hover-cells:hover {
+  opacity: 1;
+}

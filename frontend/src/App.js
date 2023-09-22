@@ -4,7 +4,7 @@ import axios from "axios";
 import FinalView from "./FinalView";
 import { useAuthContext } from "./hooks/useAuthContext";
 import { useWatchlistContext } from "./hooks/useWatchlistContext";
-import { getWatchlists } from "./services/CrudService";
+import { getWatchlists } from "./services/CRUDService";
 import { handleScrollShadow } from "./utilities/utilities";
 import { useMediaQuery } from "react-responsive";
 import { useAuth } from "./hooks/useAuth";
@@ -103,7 +103,6 @@ function App() {
   };
 
   const getOMDBData = async (titleIDs) => {
-    console.log("Omdb input titleIDs ", titleIDs);
     try {
       if (!titleIDs.imdb_id) throw new Error("No IMDB ID found");
 

@@ -13,12 +13,21 @@ export const WhiteClearIcon = styled(Clear)(() => ({
   color: "#fff",
 }));
 
-export const FadeIcon = styled(Add)(({ visible }) => ({
-  position: "absolute",
-  color: "#fff",
-  opacity: visible ? 1 : 0,
-  transition: "opacity 0.1s linear",
-}));
+// export const FadeIcon = styled(Add)(({ visible }) => ({
+//   position: "absolute",
+//   color: "#fff",
+//   opacity: visible ? 1 : 0,
+//   transition: "opacity 0.1s linear",
+// }));
+
+export const FadeIcon = styled(({ component: Component, visible, ...otherProps }) => <Component {...otherProps} />)(
+  ({ visible }) => ({
+    position: "absolute",
+    color: "#fff",
+    opacity: visible ? 1 : 0,
+    transition: "opacity 0.1s linear",
+  })
+);
 
 export const WhiteDragHandleIcon = styled(DragHandle)(() => ({
   color: "#fff",
