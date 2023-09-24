@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
 import { Fade, Link, Tooltip, Typography } from "@mui/material";
@@ -6,7 +6,8 @@ import { Fade, Link, Tooltip, Typography } from "@mui/material";
 import HeaderMenu from "./HeaderMenu";
 import AuthDialog from "./AuthDialog";
 import { StyledHeaderButton, StyledHeaderFormControlLabel } from "../Utility/StyledComponents/StyledComponentsHeader";
-import { StyledSwitch } from "../Utility/StyledComponents/StyledComponentsUtility";
+import { StyledSwitch, WhiteSpinner } from "../Utility/StyledComponents/StyledComponentsUtility";
+import { AuthContext } from "../../context/AuthContext";
 
 const Header = ({
   onHomePage,
@@ -22,6 +23,8 @@ const Header = ({
   const [authSwitch, setAuthSwitch] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [modeSwitchDisable, setModeSwitchDisable] = useState(false);
+
+  const { isLoading } = useContext(AuthContext);
 
   const authDialogHandler = () => {
     setAuthOpen(!authOpen);
@@ -98,6 +101,8 @@ const Header = ({
               setAuthOpen={setAuthOpen}
               setAuthSwitch={setAuthSwitch}
             />
+          ) : isLoading ? (
+            <WhiteSpinner />
           ) : (
             <div>
               <StyledHeaderButton disableRipple onClick={authDialogHandler}>

@@ -30,19 +30,20 @@ const SortableTitleItem = ({ id, listID, listEdit, nodeRef, children, listViewCe
     <li ref={nodeRef} className={"item"} style={style}>
       <Box sx={{ width: "100%" }}>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <WhiteDragHandleIcon
-            sx={{
-              cursor: "grab",
-              pointerEvents: listEdit ? "all" : "none",
-              opacity: listEdit ? 1 : 0,
-              transform: listEdit ? "translateX(0)" : "translateX(-30px)",
-              transition: "opacity 300ms, transform 300ms",
-              touchAction: "manipulation",
-            }}
-            {...listeners}
-            {...attributes}
-          />
-
+          {!listViewCells && (
+            <WhiteDragHandleIcon
+              sx={{
+                cursor: "grab",
+                pointerEvents: listEdit ? "all" : "none",
+                opacity: listEdit ? 1 : 0,
+                transform: listEdit ? "translateX(0)" : "translateX(-30px)",
+                transition: "opacity 300ms, transform 300ms",
+                touchAction: "manipulation",
+              }}
+              {...listeners}
+              {...attributes}
+            />
+          )}
           {children}
         </Box>
         {!listViewCells && <Divider sx={{ m: "0.5rem 0 0.5rem 0", backgroundColor: "#595959" }} />}

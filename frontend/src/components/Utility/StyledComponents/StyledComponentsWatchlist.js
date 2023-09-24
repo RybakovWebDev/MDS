@@ -2,7 +2,7 @@ import { Input } from "@mui/joy";
 import { AccordionDetails, AccordionSummary, Button, TextField, Typography, styled } from "@mui/material";
 
 export const StyledWatchlistNameTextfield = styled(TextField)(({ theme }) => ({
-  marginRight: "1rem",
+  width: "100%",
   borderColor: "white",
 
   "& .MuiInputBase-input": {
@@ -10,6 +10,7 @@ export const StyledWatchlistNameTextfield = styled(TextField)(({ theme }) => ({
     fontFamily: "Inter",
     fontSize: "28px",
     fontWeight: "700",
+    lineHeight: "1.2",
     "&.Mui-disabled": {
       WebkitTextFillColor: "#fff",
     },
@@ -22,6 +23,12 @@ export const StyledWatchlistNameTextfield = styled(TextField)(({ theme }) => ({
   },
   "& .MuiInputBase-root.Mui-disabled:before": {
     borderBottom: "none",
+  },
+  [theme.breakpoints.down("1279")]: {
+    margin: "0 1rem 0 0.5rem",
+    "& .MuiInputBase-input": {
+      lineHeight: "1.2",
+    },
   },
 }));
 

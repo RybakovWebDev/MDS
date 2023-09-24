@@ -30,7 +30,7 @@ const HeaderMenu = ({ open, setMenuOpen, menuStateHandler, logout, setAuthOpen, 
     }
   };
   return (
-    <nav aria-label='User menu navigation'>
+    <nav aria-label='User menu navigation' className='fade-in'>
       <IconButton
         id='menuBtn'
         aria-controls={open ? "headerMenuBtn" : undefined}

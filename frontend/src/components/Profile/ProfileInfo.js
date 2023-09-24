@@ -190,50 +190,53 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
             disabled={!edit}
             inputProps={{ readOnly: !edit, maxLength: 19 }}
           />
-          {edit ? (
-            <div className='profile__personal-info-controls-wrapper'>
-              <StyledButtonSmall
-                className='fade-in'
-                id='profileInfoEditCancelBtn'
-                variant='outlined'
-                disabled={isUploading}
-                sx={{
-                  m: "0 1.5rem 0 0",
-                }}
-                onClick={handleProfileInfoEditCancel}
-              >
-                <Clear />
-              </StyledButtonSmall>
-              <StyledButtonSmall
-                className='fade-in'
-                id='profileInfoEditConfirmBtn'
-                variant='outlined'
-                disabled={isShaking || isUploading}
-                onClick={handleProfileInfoEditConfirm}
-              >
-                <Check />
-              </StyledButtonSmall>
-              <ErrorPopper
-                anchorEl={anchorEl}
-                open={errorPopperOpen}
-                onClose={handleErrorPopper}
-                errorText={errorObject?.errorText}
-                errorCode={errorObject?.errorCode}
-                color='black'
-              />
-            </div>
-          ) : (
-            <StyledButton className='fade-in' id='profileInfoEditBtn' variant='outlined' onClick={handleProfileInfo}>
-              <Edit />
-            </StyledButton>
-          )}
         </div>
         <Typography variant='h6' sx={{ fontWeight: "300", fontFamily: "Roboto" }}>{`Member since ${user.date.slice(
           0,
           4
         )}`}</Typography>
       </div>
-      {edit && <ProfileDeletion user={user} />}
+
+      {edit ? (
+        <div className='profile__personal-info-controls-wrapper'>
+          <ProfileDeletion user={user} />
+          <StyledButtonSmall
+            className='fade-in'
+            id='profileInfoEditCancelBtn'
+            variant='outlined'
+            disabled={isUploading}
+            sx={{
+              m: "0 1.5rem 0 0",
+            }}
+            onClick={handleProfileInfoEditCancel}
+          >
+            <Clear />
+          </StyledButtonSmall>
+          <StyledButtonSmall
+            className='fade-in'
+            id='profileInfoEditConfirmBtn'
+            variant='outlined'
+            disabled={isShaking || isUploading}
+            onClick={handleProfileInfoEditConfirm}
+          >
+            <Check />
+          </StyledButtonSmall>
+          <ErrorPopper
+            anchorEl={anchorEl}
+            open={errorPopperOpen}
+            onClose={handleErrorPopper}
+            errorText={errorObject?.errorText}
+            errorCode={errorObject?.errorCode}
+            color='black'
+          />
+        </div>
+      ) : (
+        <div className='profile__personal-info-controls-wrapper'>
+          <StyledButton className='fade-in' id='profileInfoEditBtn' variant='outlined' onClick={handleProfileInfo}>
+            <Edit />
+          </StyledButton>
+        </div>
+      )}
     </article>
   );
 };

@@ -170,7 +170,7 @@
 @media (max-width: 1279px) {
   .home-input {
     position: fixed;
-    margin: 25vh 20vw 0 20vw;
+    margin: 16vh 20vw 0 20vw;
     min-height: 14rem;
     height: 14rem;
     max-height: 14rem;
@@ -187,7 +187,7 @@
   }
 
   .home-input--active {
-    margin: 8vh 20vw 0 20vw;
+    margin: 12vh 20vw 0 20vw;
   }
 
   .home-input--up {

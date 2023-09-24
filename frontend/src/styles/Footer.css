@@ -13,6 +13,7 @@
 
 .footer__home {
   position: fixed;
+  bottom: -1px;
   height: 30vh;
   mask: linear-gradient(180deg, #0000 0%, #000 65%);
   pointer-events: none;

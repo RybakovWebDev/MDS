@@ -30,7 +30,7 @@ import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifi
 import { deleteWatchlist, patchWatchlist } from "../../services/CrudService";
 import { useAuthContext } from "../../hooks/useAuthContext";
 
-const WatchlistSingle = ({ props, user, watchlist }) => {
+const WatchlistSingle = ({ props, user, watchlist, isTabletOrMobile }) => {
   const { watchlists, dispatchWatchlists } = useWatchlistContext();
   const { dispatchUser } = useAuthContext();
   const currentWatchlist = watchlist ? watchlists.filter((w) => w._id === watchlist._id)[0] : null;
@@ -204,12 +204,14 @@ const WatchlistSingle = ({ props, user, watchlist }) => {
               id='watchlistNameInput'
               variant='standard'
               multiline
-              fullWidth
+              // fullWidth
               value={listName ? listName : currentWatchlist.name}
               onChange={handleWatchlistNameInput}
               disabled={!editList}
-              inputProps={{ readOnly: !editList, maxLength: 500 }}
+              inputProps={{ readOnly: !editList, maxLength: 120 }}
             />
+          </div>
+          <div className='watchlist-single__controls-wrapper'>
             {user && (
               <WatchlistsControlsEdit
                 showControls={true}
@@ -225,7 +227,14 @@ const WatchlistSingle = ({ props, user, watchlist }) => {
                 watchlistSingle={true}
               />
             )}
-            <WatchlistsControlsView listViewHandler={listViewHandler} listView={listView} cellsView={true} />
+            <div>
+              <WatchlistsControlsView
+                listViewHandler={listViewHandler}
+                listView={listView}
+                cellsView={true}
+                isTabletOrMobile={isTabletOrMobile}
+              />
+            </div>
           </div>
           <div className={listView === "cells" ? "watchlist-single--view-cells" : ""}>
             {listView !== "cells" && <Divider sx={{ m: "0.5rem 0 0.5rem 0", backgroundColor: "#595959" }} />}

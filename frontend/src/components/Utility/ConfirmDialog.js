@@ -8,7 +8,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { Divider } from "@mui/joy";
 import { StyledButton } from "./StyledComponents/StyledComponentsUtility";
 
-const ConfirmDialog = ({ open, handleClose, title, text, confirm, delay }) => {
+const ConfirmDialog = ({ open, handleClose, title, text, fontSize, fontWeight, confirm, delay }) => {
   const [confirmDisabled, setConfirmDisabled] = useState(false);
 
   useEffect(() => {
@@ -44,7 +44,11 @@ const ConfirmDialog = ({ open, handleClose, title, text, confirm, delay }) => {
       {text && <Divider />}
       {text && (
         <DialogContent>
-          <DialogContentText id='alert-dialog-description' color='#fff'>
+          <DialogContentText
+            id='alert-dialog-description'
+            color='#fff'
+            sx={{ fontWeight: `${fontWeight ? fontWeight : "400"}`, fontSize: `${fontSize ? fontSize : "18px"}` }}
+          >
             {text}
           </DialogContentText>
         </DialogContent>

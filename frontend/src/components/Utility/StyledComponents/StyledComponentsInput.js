@@ -84,6 +84,7 @@ export const StyledAutocompleteSuggestionTitle = styled(Typography)(({ theme }) 
 }));
 
 export const StyledAutocompleteSuggestionYear = styled(Typography)(({ theme }) => ({
+  margin: "0 0.5rem 0 0",
   color: "gray",
   fontSize: "20px",
   [theme.breakpoints.down("1279")]: {

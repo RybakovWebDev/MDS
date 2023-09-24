@@ -43,7 +43,13 @@ const Watchlist = ({ props, userWatchlists, user, setOnHomePage, isTabletOrMobil
           {errorMessage}
         </Typography>
       ) : (
-        <WatchlistSingle props={props} user={user} watchlist={watchlist} userWatchlists={userWatchlists} />
+        <WatchlistSingle
+          props={props}
+          user={user}
+          watchlist={watchlist}
+          userWatchlists={userWatchlists}
+          isTabletOrMobile={isTabletOrMobile}
+        />
       )}
     </section>
   );

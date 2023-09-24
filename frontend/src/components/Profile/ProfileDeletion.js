@@ -37,6 +37,8 @@ const ProfileDeletion = ({ user }) => {
         handleClose={handleProfileDeleteDialog}
         title={"Are you sure you want to delete your profile?"}
         text={"WARNING: ALL DATA WILL BE DELETED. THIS ACTION IS IRREVERSIBLE!"}
+        fontSize={"22px"}
+        fontWeight={800}
         confirm={handleProfileDeletion}
         delay={5000}
       />
