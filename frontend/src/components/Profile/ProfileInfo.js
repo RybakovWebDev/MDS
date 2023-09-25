@@ -124,7 +124,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
           <Tooltip
             TransitionComponent={Fade}
             TransitionProps={{ timeout: 300 }}
-            title={<Typography sx={{ fontSize: "12px" }}>File size limit: 2MB. PNG or JPG</Typography>}
+            title={<Typography sx={{ fontSize: "12px" }}>File size limit: 5MB. PNG/JPG</Typography>}
             open={tooltipOpen && edit}
             onOpen={() => setTooltipOpen(true)}
             onClose={() => !isTabletOrMobile && setTooltipOpen(false)}
@@ -152,7 +152,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
                 id='profileInfoImageChangeInput'
                 hidden
                 name='fileInput'
-                accept='image/png, image/jpeg'
+                accept='image/png, image/jpeg, image/jpg'
                 type='file'
                 onChange={handleProfileInfo}
                 ref={inputRef}
@@ -191,10 +191,9 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
             inputProps={{ readOnly: !edit, maxLength: 19 }}
           />
         </div>
-        <Typography variant='h6' sx={{ fontWeight: "300", fontFamily: "Roboto" }}>{`Member since ${user.date.slice(
-          0,
-          4
-        )}`}</Typography>
+        <Typography
+          sx={{ fontSize: "18px", fontWeight: "300", fontFamily: "Inter, Roboto" }}
+        >{`Member since ${user.date.slice(0, 4)}`}</Typography>
       </div>
 
       {edit ? (

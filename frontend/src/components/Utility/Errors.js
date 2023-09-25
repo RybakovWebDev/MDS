@@ -24,12 +24,13 @@ export const ErrorPopper = ({ anchorEl, open, onClose, errorText, errorCode, col
           },
         },
       ]}
+      sx={{ zIndex: 100 }}
     >
       {({ TransitionProps }) => (
         <Fade {...TransitionProps} timeout={350}>
           <Box
             sx={{
-              margin: "1rem 0 0 0",
+              margin: "1rem 1rem 0 1rem",
               display: "flex",
               flexDirection: "row-reverse",
               alignItems: "center",

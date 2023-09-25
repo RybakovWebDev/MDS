@@ -3,12 +3,16 @@ const multer = require("multer");
 
 const multerUpload = multer({
   limits: {
-    fileSize: 2 * 1024 * 1024,
+    fileSize: 5 * 1024 * 1024,
   },
   fileFilter: (req, file, callback) => {
-    const acceptableExtensions = [".png", ".jpg"];
-    if (!acceptableExtensions.includes(path.extname(file.originalname))) {
-      return callback(new Error("Only .png and .jpg files are allowed"));
+    const acceptableMimeTypes = ["image/png", "image/jpg", "image/jpeg"];
+    const acceptableExtensions = [".png", ".jpg", ".jpeg"];
+    if (
+      !acceptableMimeTypes.includes(file.mimetype) ||
+      !acceptableExtensions.includes(path.extname(file.originalname).toLowerCase())
+    ) {
+      return callback(new Error("Only .png, .jpg and .jpeg files are allowed"));
     }
     callback(null, true);
   },
