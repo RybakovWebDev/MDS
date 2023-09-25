@@ -29,14 +29,14 @@ import {
   StyledAccordionDetailsWatchlist,
   StyledAccordionSummaryWatchlist,
   StyledWatchlistName,
-  StyledWatchlistNameInput,
+  StyledWatchlistNameTextfield,
   StyledWatchlistTitleRemoveButton,
   StyledWatchlistTitleText,
 } from "../Utility/StyledComponents/StyledComponentsWatchlist";
 import { WhiteSpinner } from "../Utility/StyledComponents/StyledComponentsUtility";
 import WatchlistsControlsView from "./WatchlistsControlsView";
 
-const Watchlists = ({ props, userWatchlists, user }) => {
+const Watchlists = ({ props, userWatchlists, user, isTabletOrMobile }) => {
   const [expandedAccordions, setExpandedAccordions] = useState([]);
   const [editList, setEditList] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
@@ -263,15 +263,25 @@ const Watchlists = ({ props, userWatchlists, user }) => {
           onClick={() => handleAccordionExpandState(l._id)}
         >
           {selectedForEdit ? (
-            <StyledWatchlistNameInput
+            <StyledWatchlistNameTextfield
               id='watchlistNameInput'
-              variant='outline'
-              defaultValue={l.name}
+              variant='standard'
+              multiline
+              value={listName ? listName : l.name}
               onClick={(e) => e.stopPropagation()}
               onChange={handleWatchlistNameInput}
+              disabled={!editList}
+              inputProps={{ readOnly: !editList, maxLength: 120 }}
+              sx={{
+                width: "95%",
+                "& .MuiInputBase-input": {
+                  fontSize: "18px",
+                  lineHeight: "1.5",
+                },
+              }}
             />
           ) : (
-            <Box sx={{ height: "40px", display: "flex", alignItems: "center" }}>
+            <Box sx={{ width: "95%", height: "auto", display: "flex", alignItems: "center" }}>
               <StyledWatchlistName>{l.name}</StyledWatchlistName>
             </Box>
           )}
@@ -324,6 +334,7 @@ const Watchlists = ({ props, userWatchlists, user }) => {
                       id={l._id}
                       expandedAccordions={expandedAccordions.length === 0}
                       nodeRef={nodeRef}
+                      isTabletOrMobile={isTabletOrMobile}
                     >
                       {renderAccordion(l, nodeRef)}
                     </SortableAccordionItem>

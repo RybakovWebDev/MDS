@@ -33,7 +33,7 @@ a:hover {
   flex-direction: column;
   align-items: center;
   font-family: "Inter", "Roboto", sans-serif;
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 
 .home {

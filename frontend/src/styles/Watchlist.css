@@ -221,7 +221,6 @@
   .watchlist-accordion__entry-img-cont-icon,
   .watchlist-accordion__entry-img-cont-details,
   .watchlist-accordion__entry-img-cont-cells {
-    margin: 0 0 0 1rem;
     width: auto;
     height: 100px;
     display: flex;
@@ -230,8 +229,14 @@
   }
 
   .watchlist-accordion__entry-img-cont-large {
+    width: auto;
     height: calc(100vh / 8);
     max-height: 100px;
+  }
+
+  .watchlist-accordion__entry-img-cont-small {
+    margin: 0;
+    width: auto;
   }
 
   .watchlist-accordion__entry-img-cont-cells {

@@ -44,7 +44,12 @@ const Profile = ({ props, user, personPlaceholder, setOnHomePage, isTabletOrMobi
           />
           <Divider sx={{ width: "65%", alignSelf: "center", bgcolor: "rgb(65, 65, 65)" }} />
 
-          <Watchlists props={props} userWatchlists={props.watchlists} user={props.user} />
+          <Watchlists
+            props={props}
+            userWatchlists={props.watchlists}
+            user={props.user}
+            isTabletOrMobile={isTabletOrMobile}
+          />
         </>
       ) : (
         <WhiteSpinner />

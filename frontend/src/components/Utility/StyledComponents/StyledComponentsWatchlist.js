@@ -16,16 +16,20 @@ export const StyledWatchlistNameTextfield = styled(TextField)(({ theme }) => ({
     },
   },
   "& .MuiInput-underline:hover:before": {
-    borderBottomColor: "#222222",
+    borderBottomColor: "#333333",
+  },
+  "& .MuiInput-underline:before": {
+    borderBottomColor: "hsl(0, 0%, 50%)",
   },
   "& .MuiInput-underline:after": {
-    borderBottomColor: "white",
+    borderBottomColor: "#fff",
   },
   "& .MuiInputBase-root.Mui-disabled:before": {
     borderBottom: "none",
   },
   [theme.breakpoints.down("1279")]: {
-    margin: "0 1rem 0 0.5rem",
+    margin: "0 1rem 0 1rem",
+    width: "95%",
     "& .MuiInputBase-input": {
       lineHeight: "1.2",
     },
@@ -64,7 +68,7 @@ export const StyledWatchlistName = styled(Typography)(({ theme }) => ({
 }));
 
 export const StyledWatchlistNameInput = styled(Input)(({ theme }) => ({
-  width: "70%",
+  width: "90%",
   backgroundColor: "#333333",
   color: "white",
   lineHeight: "normal",
@@ -77,10 +81,11 @@ export const StyledWatchlistNameInput = styled(Input)(({ theme }) => ({
 }));
 
 export const StyledWatchlistTitleText = styled(Typography)(({ theme }) => ({
-  marginLeft: "1rem",
+  margin: "0 0 0 1rem",
   color: "white",
   fontSize: "16px",
   [theme.breakpoints.down("1279")]: {
+    margin: "0 1rem 0 1rem",
     fontSize: "14px",
   },
 }));

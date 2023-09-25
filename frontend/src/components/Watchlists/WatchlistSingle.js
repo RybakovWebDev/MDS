@@ -55,7 +55,7 @@ const WatchlistSingle = ({ props, user, watchlist, isTabletOrMobile }) => {
     setListCopy(JSON.parse(JSON.stringify(currentWatchlist)));
     setEditList(listID);
     setListName(currentWatchlist.name);
-    setListView("large");
+    if (listView === "cells") setListView("large");
   };
 
   const handleWatchlistNameInput = (e) => {
@@ -161,6 +161,7 @@ const WatchlistSingle = ({ props, user, watchlist, isTabletOrMobile }) => {
                     listEdit={editList}
                     nodeRef={nodeRef}
                     listViewCells={listView === "cells"}
+                    isTabletOrMobile={isTabletOrMobile}
                   >
                     <div className='watchlist-accordion__entry'>
                       <Link
@@ -180,6 +181,7 @@ const WatchlistSingle = ({ props, user, watchlist, isTabletOrMobile }) => {
                           className='fade-in'
                           id='watchlistTitleRemoveBtn'
                           onClick={() => handleWatchlistTitleRemove(l._id, el.imdbID)}
+                          sx={{ margin: `${isTabletOrMobile ? "0 0.5rem 0 0.5rem" : "0"}` }}
                         >
                           <Clear />
                         </StyledWatchlistTitleRemoveButton>
@@ -204,7 +206,6 @@ const WatchlistSingle = ({ props, user, watchlist, isTabletOrMobile }) => {
               id='watchlistNameInput'
               variant='standard'
               multiline
-              // fullWidth
               value={listName ? listName : currentWatchlist.name}
               onChange={handleWatchlistNameInput}
               disabled={!editList}
@@ -232,6 +233,7 @@ const WatchlistSingle = ({ props, user, watchlist, isTabletOrMobile }) => {
                 listViewHandler={listViewHandler}
                 listView={listView}
                 cellsView={true}
+                editList={editList}
                 isTabletOrMobile={isTabletOrMobile}
               />
             </div>

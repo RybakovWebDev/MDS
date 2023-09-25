@@ -5,7 +5,7 @@ import { AppsOutlined, CropSquare, List } from "@mui/icons-material";
 
 import { StyledButton } from "../Utility/StyledComponents/StyledComponentsUtility";
 
-const WatchlistsControlsView = ({ listViewHandler, listView, cellsView, isTabletOrMobile }) => {
+const WatchlistsControlsView = ({ listViewHandler, listView, cellsView, editList, isTabletOrMobile }) => {
   return (
     <Tooltip TransitionComponent={Fade} TransitionProps={{ timeout: 600 }} title='List view settings'>
       <ButtonGroup sx={{ margin: `${isTabletOrMobile ? "0 1rem 0 0" : "0"}` }}>
@@ -31,7 +31,7 @@ const WatchlistsControlsView = ({ listViewHandler, listView, cellsView, isTablet
         >
           <List />
         </StyledButton>
-        {cellsView && (
+        {cellsView && !editList && (
           <StyledButton
             id='listViewCellsBtn'
             onClick={listViewHandler}
