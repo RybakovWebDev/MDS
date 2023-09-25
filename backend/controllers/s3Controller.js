@@ -110,15 +110,11 @@ const uploadFile = async (req, res) => {
     const s3 = await getS3();
     const { file } = req;
     const { userID } = req.body;
-    console.log("This is the file in uploadFile function: ", file);
     if (["image/png", "image/jpeg"].includes(file.mimetype)) {
       const outputBuffer = await sharp(file.buffer).jpeg({ quality: 60 }).toBuffer();
       file.buffer = outputBuffer;
       file.mimetype = "image/jpeg";
     }
-
-    console.log("This is the file after sharp library processed it: ", file);
-
     const { location, oldFileName } = await uploadFileToS3(s3, file, userID);
     if (oldFileName) {
       await deleteFileFromS3(s3, userID, oldFileName);
