@@ -28,6 +28,22 @@ app.use("/api/users", usersRoutes);
 app.use("/api/watchlists", watchlistsRoutes);
 app.use("/api/chatbot", chatbotRoutes);
 
+app.use(function (err, req, res, next) {
+  if (err.status === 400) {
+    res.status(err.status).json({ message: "Bad Request" });
+  } else if (err.status === 401) {
+    res.status(err.status).json({ message: "Unauthorized" });
+  } else if (err.status === 403) {
+    res.status(err.status).json({ message: "Forbidden" });
+  } else if (err.status === 404) {
+    res.status(err.status).json({ message: "Not Found" });
+  } else if (err.status === 413) {
+    res.status(err.status).json({ message: "Payload Too Large" });
+  } else {
+    next(err);
+  }
+});
+
 mongoose.set("strictQuery", false);
 mongoose
   .connect(process.env.MONG_URI, {
