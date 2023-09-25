@@ -89,7 +89,11 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
       setIsUploading(false);
       setFile(null);
       setImage(user.image);
-      setErrorObject({ errorText: err.response.data.error, errorCode: err.response.status });
+      if (err.response) {
+        setErrorObject({ errorText: err.response.data.error, errorCode: err.response.status });
+      } else {
+        setErrorObject({ errorText: err.message, errorCode: "NETWORK_ERROR" });
+      }
       setAnchorEl(e.target);
       setErrorPopperOpen(true);
       setIsShaking(true);

@@ -1,5 +1,6 @@
 import { useEffect, createContext, useReducer } from "react";
 import axios from "axios";
+import { getUser } from "../services/CrudService";
 
 export const AuthContext = createContext();
 
@@ -53,6 +54,11 @@ export const AuthContextProvider = ({ children }) => {
 
     if (localUser) {
       verify();
+      getUser(localUser.token, localUser.id).then((userData) => {
+        const latestUserData = { ...localUser, name: userData.data.name, image: userData.data.image };
+        localStorage.setItem("user", JSON.stringify(latestUserData));
+        dispatchUser({ type: "SET_USER", payload: latestUserData });
+      });
     } else {
       dispatchUser({ type: "SET_LOADING", payload: false });
     }

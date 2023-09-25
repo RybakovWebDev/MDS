@@ -252,6 +252,7 @@ const Watchlists = ({ props, userWatchlists, user, isTabletOrMobile }) => {
       <Accordion
         onChange={handleAccordionEdit}
         sx={{
+          margin: `${isTabletOrMobile ? "0 1rem 0 0" : "0"}`,
           width: "95%",
           backgroundColor: "#222222",
         }}

@@ -122,7 +122,7 @@ const uploadFile = async (req, res) => {
     res.status(200).json({ location });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };
 

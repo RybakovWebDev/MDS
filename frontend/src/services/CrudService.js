@@ -10,6 +10,13 @@ export const loginUser = async (user) => {
   return data;
 };
 
+export const getUser = async (userToken, userID) => {
+  const data = await axios.get(`${process.env.REACT_APP_URI}/api/users/${userID}`, {
+    headers: { Authorization: `Bearer ${userToken}` },
+  });
+  return data;
+};
+
 export const updateUser = async (userToken, userID, update, dispatchUser) => {
   try {
     const patchedUser = await axios.patch(`${process.env.REACT_APP_URI}/api/users/${userID}`, update, {
