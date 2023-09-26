@@ -29,7 +29,7 @@ const truncateResponse = (response) => {
   return truncatedResponse.trim();
 };
 
-const postMessage = async (req, res) => {
+const postMessage = async (req, res, next) => {
   const { userMessage } = req.body;
 
   console.log("User message input: ", userMessage);
@@ -54,7 +54,8 @@ const postMessage = async (req, res) => {
   } catch (error) {
     console.error("This is the error: ", error);
     console.error("Error response data: ", error.response.data);
-    res.status(500).json({ error: "Something went wrong" });
+    err.customMessage = "Something went wrong";
+    next(err);
   }
 };
 

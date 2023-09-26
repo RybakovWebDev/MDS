@@ -28,12 +28,13 @@ const getS3 = async () => {
     const creds = {
       accessKeyId: data.Credentials.AccessKeyId,
       secretAccessKey: data.Credentials.SecretAccessKey,
-      sessionToken: data.Credentials.SessionToken,
+      sessionToken: "lool",
+      // sessionToken: data.Credentials.SessionToken,
     };
     return new S3Client({ credentials: creds, region: process.env.ENV_AWS_REGION });
   } catch (err) {
-    console.log(err);
-    throw new Error("Failed to initialize s3 object");
+    err.customMessage = "Server error: Failed to initialize s3 object";
+    throw err;
   }
 };
 
@@ -54,8 +55,8 @@ const uploadFileToS3 = async (s3, file, userID) => {
       oldFileName = data.Contents[0].Key.split("/")[1];
     }
   } catch (err) {
-    console.log(err);
-    throw new Error("Failed to list files.");
+    err.customMessage = "Server error: Failed to list files.";
+    throw err;
   }
 
   try {
@@ -69,8 +70,8 @@ const uploadFileToS3 = async (s3, file, userID) => {
     return location;
   } catch (err) {
     if (err.code !== "NotFound" && err.message !== "UnknownError") {
-      console.log(err);
-      throw new Error("Failed to check if file exists in S3 bucket.");
+      err.customMessage = "Server error: Failed to check if file exists in S3 bucket.";
+      throw err;
     }
   }
 
@@ -86,8 +87,8 @@ const uploadFileToS3 = async (s3, file, userID) => {
 
     return { location, oldFileName };
   } catch (err) {
-    console.log(err);
-    throw new Error("Failed to upload file.");
+    err.customMessage = "Server error: Failed to upload file.";
+    throw err;
   }
 };
 
@@ -100,12 +101,12 @@ const deleteFileFromS3 = async (s3, userID, fileName) => {
       })
     );
   } catch (err) {
-    console.log(err);
-    throw new Error("Failed to delete file.");
+    err.customMessage = "Server error: Failed to delete file.";
+    throw err;
   }
 };
 
-const uploadFile = async (req, res) => {
+const uploadFile = async (req, res, next) => {
   try {
     const s3 = await getS3();
     const { file } = req;
@@ -126,7 +127,7 @@ const uploadFile = async (req, res) => {
   }
 };
 
-const deleteFile = async (req, res) => {
+const deleteFile = async (req, res, next) => {
   const { userID, fileName } = req.params;
   try {
     const s3 = await getS3();
@@ -134,7 +135,7 @@ const deleteFile = async (req, res) => {
     res.status(200).json({ message: "File deleted successfully" });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: err.message });
+    next(err);
   }
 };
 

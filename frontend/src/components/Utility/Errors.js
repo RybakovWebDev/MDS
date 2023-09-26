@@ -47,7 +47,7 @@ export const ErrorPopper = ({ anchorEl, open, onClose, errorText, errorCode, col
               <Typography sx={{ mr: "0.5rem", color: color ? color : "#fff" }}>
                 There's been an error! 😥
                 <br />
-                {errorText ? ` ${errorText};` : " No error message provided."}
+                {errorText ? ` ${errorText}${errorText.endsWith(".") ? "" : ";"}` : " No error message provided."}
                 {errorCode ? ` Error code: ${errorCode}.` : " No error code provided."}
               </Typography>
             )}

@@ -27,11 +27,28 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
   const [errorObject, setErrorObject] = useState({});
   const [errorPopperOpen, setErrorPopperOpen] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
+  const [waitingForBackend, setWaitingForBackend] = useState(false);
 
   const { dispatchUser } = useAuthContext();
 
   const inputRef = useRef();
+  const confirmButtonRef = useRef();
+
+  const triggerErrorPopper = (target) => {
+    setImage(user.image);
+    setAnchorEl(target);
+    setErrorPopperOpen(true);
+    setIsShaking(true);
+    setTimeout(() => setIsShaking(false), 500);
+  };
+
+  const closeErrorPopper = () => {
+    setErrorPopperOpen(false);
+    setTimeout(() => {
+      setAnchorEl(null);
+      setErrorObject(null);
+    }, 300);
+  };
 
   const handleProfileInfo = async (e) => {
     const target = e.currentTarget;
@@ -43,8 +60,27 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
     }
     if (id === "profileInfoImageChangeInput") {
       const selectedFile = e.target.files[0];
+      const maxSize = 5 * 1024 * 1024;
+      if (selectedFile.size > maxSize) {
+        setErrorObject({ errorText: "File size too large! Limit is 5MB.", errorCode: "413" });
+        triggerErrorPopper(confirmButtonRef.current);
+        e.target.value = null;
+        return;
+      }
+      const fileExtension = selectedFile.name.split(".").pop().toLowerCase();
+      const validExtensions = ["jpg", "jpeg", "png"];
+      if (!validExtensions.includes(fileExtension)) {
+        setErrorObject({
+          errorText: "Invalid file type! Only .jpg, .jpeg, and .png are allowed.",
+          errorCode: "415",
+        });
+        triggerErrorPopper(confirmButtonRef.current);
+        e.target.value = null;
+        return;
+      }
       setFile(selectedFile);
       setImage(URL.createObjectURL(selectedFile));
+      e.target.value = null;
     }
     if (id === "profileInfoImageRemoveBtn") {
       setImage("");
@@ -61,7 +97,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
     setName(user.name);
     setImage(user.image);
     inputRef.current.value = null;
-    handleErrorPopper();
+    closeErrorPopper();
   };
 
   const handleProfileInfoEditConfirm = async (e) => {
@@ -70,23 +106,25 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
       inputRef.current.value = null;
       updateUser(user.token, user.id, { name: name }, dispatchUser);
       if (file) {
-        setIsUploading(true);
+        setWaitingForBackend(true);
         const newImage = await uploadImage(user.token, user.id, file);
         inputRef.current.value = null;
         updateUser(user.token, user.id, { image: newImage?.location ? newImage?.location : "" }, dispatchUser);
-        setIsUploading(false);
+        setWaitingForBackend(false);
       }
       if (!image && user.image) {
+        setWaitingForBackend(true);
         const fileName = user.image.split("/").slice(-1)[0];
         const deleteImageResult = await deleteImage(user.token, user.id, fileName);
         deleteImageResult.message =
           "File deleted successfully" && updateUser(user.token, user.id, { image: "" }, dispatchUser);
+        setWaitingForBackend(false);
       }
       setEdit(false);
-      handleErrorPopper();
+      closeErrorPopper();
     } catch (err) {
       console.error(err);
-      setIsUploading(false);
+      setWaitingForBackend(false);
       setFile(null);
       setImage(user.image);
       if (err.response) {
@@ -94,19 +132,8 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
       } else {
         setErrorObject({ errorText: err.message, errorCode: "NETWORK_ERROR" });
       }
-      setAnchorEl(e.target);
-      setErrorPopperOpen(true);
-      setIsShaking(true);
-      setTimeout(() => setIsShaking(false), 500);
+      triggerErrorPopper(confirmButtonRef.current);
     }
-  };
-
-  const handleErrorPopper = () => {
-    setErrorPopperOpen(false);
-    setTimeout(() => {
-      setAnchorEl(null);
-      setErrorObject(null);
-    }, 300);
   };
 
   useEffect(() => {
@@ -145,7 +172,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
               variant='contained'
               onClick={handleProfileInfo}
               component='label'
-              disabled={isUploading}
+              disabled={waitingForBackend}
               sx={{
                 animation: isShaking ? `${btnShakeAnimation} 0.5s` : "none",
                 margin: `0 0 ${isTabletOrMobile ? "3" : "1"}rem 0`,
@@ -169,7 +196,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
               variant='contained'
               onClick={handleProfileInfo}
               size='small'
-              disabled={isUploading}
+              disabled={waitingForBackend}
               sx={{
                 position: "absolute",
                 bottom: "0",
@@ -181,7 +208,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
               Remove image
             </StyledProfileImageButton>
           )}
-          {isUploading && <WhiteSpinner />}
+          {waitingForBackend && <WhiteSpinner />}
         </StyledProfileImageBackdrop>
       </div>
       <div className='profile__personal-info'>
@@ -207,7 +234,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
             className='fade-in'
             id='profileInfoEditCancelBtn'
             variant='outlined'
-            disabled={isUploading}
+            disabled={waitingForBackend}
             sx={{
               m: "0 1.5rem 0 0",
             }}
@@ -218,8 +245,9 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
           <StyledButtonSmall
             className='fade-in'
             id='profileInfoEditConfirmBtn'
+            ref={confirmButtonRef}
             variant='outlined'
-            disabled={isShaking || isUploading}
+            disabled={isShaking || waitingForBackend}
             onClick={handleProfileInfoEditConfirm}
           >
             <Check />
@@ -227,7 +255,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
           <ErrorPopper
             anchorEl={anchorEl}
             open={errorPopperOpen}
-            onClose={handleErrorPopper}
+            onClose={closeErrorPopper}
             errorText={errorObject?.errorText}
             errorCode={errorObject?.errorCode}
             color='black'

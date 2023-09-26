@@ -125,7 +125,8 @@ const Watchlists = ({ props, userWatchlists, user, isTabletOrMobile }) => {
   const handleWatchlistSave = (listID) => {
     let selectedList = findListById(listID);
     const update = { name: listName, titles: selectedList.titles };
-    patchWatchlist(user.token, listID, update, dispatchWatchlists, dispatchUser);
+    // patchWatchlist(user.token, listID, update, dispatchWatchlists, dispatchUser);
+    patchWatchlist(user.token, listID + "1", update, dispatchWatchlists, dispatchUser);
     setEditList("");
   };
 

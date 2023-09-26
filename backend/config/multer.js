@@ -18,14 +18,4 @@ const multerUpload = multer({
   },
 });
 
-const handleMulterError = (error, req, res, next) => {
-  if (error instanceof multer.MulterError && error.code === "LIMIT_FILE_SIZE") {
-    res.status(413).json({ error: error.message });
-  } else if (error instanceof multer.MulterError) {
-    res.status(400).json({ error: error.message });
-  } else if (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-module.exports = { multerUpload, handleMulterError };
+module.exports = { multerUpload };

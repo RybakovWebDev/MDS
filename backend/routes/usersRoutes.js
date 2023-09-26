@@ -9,14 +9,15 @@ const {
   patchUser,
   verifiedResponse,
 } = require("../controllers/userController");
+const { errorHandler } = require("../helpers/errorHandler");
 
 const router = express.Router();
 
-router.get("/:id", verifyUser, getUser);
-router.post("/", createUser);
-router.post("/verify", verifyUser, verifiedResponse);
-router.post("/login", loginUser);
-router.delete("/:id", verifyUser, deleteUser);
-router.patch("/:id", verifyUser, patchUser);
+router.get("/:id", verifyUser, getUser, errorHandler);
+router.post("/", createUser, errorHandler);
+router.post("/verify", verifyUser, verifiedResponse, errorHandler);
+router.post("/login", loginUser, errorHandler);
+router.delete("/:id", verifyUser, deleteUser, errorHandler);
+router.patch("/:id", verifyUser, patchUser, errorHandler);
 
 module.exports = router;
