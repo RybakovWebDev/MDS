@@ -58,8 +58,8 @@ function App() {
         const resTMDBConfig = await axios.get(`https://api.themoviedb.org/3/configuration?api_key=${tmdbAPI}`);
         setTMDBConfig(resTMDBConfig.data);
       } catch (err) {
-        console.log(err);
-        console.log(err?.response?.status);
+        console.error(err);
+        console.error(err?.response?.status);
         setMovDataOMDB("loadErr");
       } finally {
       }
@@ -75,7 +75,7 @@ function App() {
         );
         setPopularTMDB(resTMDBPopular.data.results);
       } catch (err) {
-        console.log("Error getting popular movies.", err);
+        console.error("Error getting popular movies.", err);
       }
     };
     getPopularMovies();

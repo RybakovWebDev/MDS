@@ -33,7 +33,6 @@ const SortableAccordionItem = ({ id, expandedAccordions, nodeRef, children, isTa
         {...listeners}
         {...attributes}
       />
-
       {children}
     </li>
   );

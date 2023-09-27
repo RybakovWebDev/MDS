@@ -35,6 +35,7 @@ export const AuthContextProvider = ({ children }) => {
     user: null,
     isLoading: true,
   });
+
   useEffect(() => {
     const localUser = JSON.parse(localStorage.getItem("user"));
     const verify = async () => {

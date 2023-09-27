@@ -28,8 +28,7 @@ const getS3 = async () => {
     const creds = {
       accessKeyId: data.Credentials.AccessKeyId,
       secretAccessKey: data.Credentials.SecretAccessKey,
-      sessionToken: "lool",
-      // sessionToken: data.Credentials.SessionToken,
+      sessionToken: data.Credentials.SessionToken,
     };
     return new S3Client({ credentials: creds, region: process.env.ENV_AWS_REGION });
   } catch (err) {

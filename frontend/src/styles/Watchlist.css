@@ -58,6 +58,10 @@
   justify-content: space-between;
 }
 
+.watchlist-accordion__component {
+  width: 95%;
+}
+
 .watchlist-accordion__titles li {
   display: flex;
   align-items: center;
@@ -193,12 +197,8 @@
     width: 90%;
   }
 
-  .watchlist-accordion {
-    margin: 1rem 0 1rem 0;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .watchlist-accordion__component {
+    width: 95%;
   }
 
   .watchlist-accordion__titles li {
@@ -218,18 +218,17 @@
     align-items: center;
   }
 
-  .watchlist-accordion__entry-img-cont-icon,
-  .watchlist-accordion__entry-img-cont-details,
+  .watchlist-accordion__entry-img-cont-large,
+  .watchlist-accordion__entry-img-cont-small,
   .watchlist-accordion__entry-img-cont-cells {
     width: auto;
-    height: 100px;
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-center;
     transition: height 100ms ease-in-out, width 100ms ease-in-out, margin 100ms ease-in-out;
   }
 
   .watchlist-accordion__entry-img-cont-large {
-    width: auto;
+    width: 5.5rem;
     height: calc(100vh / 8);
     max-height: 100px;
   }
@@ -237,6 +236,7 @@
   .watchlist-accordion__entry-img-cont-small {
     margin: 0;
     width: auto;
+    max-width: 2rem;
   }
 
   .watchlist-accordion__entry-img-cont-cells {
@@ -253,9 +253,9 @@
     display: flex;
     justify-content: flex-end;
   }
-
   .watchlists__titles-controls-wrapper {
-    bottom: -1px;
+    bottom: -1;
+    margin: 0 0rem 0 0;
   }
 
   .watchlists__modal-controls-wrapper {
@@ -263,10 +263,31 @@
     display: flex;
     justify-content: flex-end;
   }
+  .watchlist-accordion__details::-webkit-scrollbar {
+    width: 15px;
+  }
 }
 
-@media (max-width: 305px) {
+@media (max-width: 317px) {
   .watchlist-single__controls-wrapper {
     flex-direction: column;
+  }
+
+  #watchlistDeleteBtn,
+  #watchlistCancelBtn,
+  #watchlistSaveBtn,
+  #watchlistEditBtn,
+  #watchlistOpenBtn {
+    min-width: 10px;
+    max-width: 45px;
+  }
+
+  .watchlist-accordion__component {
+    min-width: 13rem;
+    max-width: 14.5rem;
+  }
+
+  .watchlist-accordion__entry-img-cont-large {
+    width: 4rem;
   }
 }

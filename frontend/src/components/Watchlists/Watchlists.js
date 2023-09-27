@@ -1,8 +1,8 @@
-import React, { createRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { createRef, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Box, Typography } from "@mui/joy";
-import { Clear, ExpandMore } from "@mui/icons-material";
+import { ExpandMore } from "@mui/icons-material";
 import { Accordion, Fade } from "@mui/material";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import {
@@ -17,12 +17,13 @@ import {
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
 
-import WatchlistsControlsNew from "./WatchlistsControlsNew";
+import WatchlistsControlsAdd from "./WatchlistsControlsAdd";
 import WatchlistsControlsEdit from "./WatchlistsControlsEdit";
 import SortableAccordionItem from "./SortableAccordionItem";
-import SortableTitleItem from "./SortableTitleItem";
 import { deleteWatchlist, patchWatchlist, postWatchlist, updateUser } from "../../services/CrudService";
 
+import WatchlistsControlsView from "./WatchlistsControlsView";
+import WatchlistTitlesList from "./WatchlistTitlesList";
 import { useWatchlistContext } from "../../hooks/useWatchlistContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import {
@@ -30,11 +31,8 @@ import {
   StyledAccordionSummaryWatchlist,
   StyledWatchlistName,
   StyledWatchlistNameTextfield,
-  StyledWatchlistTitleRemoveButton,
-  StyledWatchlistTitleText,
 } from "../Utility/StyledComponents/StyledComponentsWatchlist";
 import { WhiteSpinner } from "../Utility/StyledComponents/StyledComponentsUtility";
-import WatchlistsControlsView from "./WatchlistsControlsView";
 
 const Watchlists = ({ props, userWatchlists, user, isTabletOrMobile }) => {
   const [expandedAccordions, setExpandedAccordions] = useState([]);
@@ -43,10 +41,28 @@ const Watchlists = ({ props, userWatchlists, user, isTabletOrMobile }) => {
   const [listName, setListName] = useState("");
   const [listCopy, setListCopy] = useState({});
   const [listView, setListView] = useState("large");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [errorObject, setErrorObject] = useState({});
+  const [errorPopperOpen, setErrorPopperOpen] = useState(false);
+  const [popperFadeDuration, setPopperFadeDuration] = useState(350);
 
   const { isLoading, dispatchWatchlists } = useWatchlistContext();
   const { dispatchUser } = useAuthContext();
   const navigate = useNavigate();
+  const confirmButtonRef = useRef();
+
+  const triggerErrorPopper = (target) => {
+    setAnchorEl(target);
+    setErrorPopperOpen(true);
+  };
+
+  const closeErrorPopper = () => {
+    setErrorPopperOpen(false);
+    setTimeout(() => {
+      setAnchorEl(null);
+      setErrorObject(null);
+    }, 300);
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -63,13 +79,12 @@ const Watchlists = ({ props, userWatchlists, user, isTabletOrMobile }) => {
   const handleAccordionEdit = () => {
     if (editList) dispatchWatchlists({ type: "PATCH_WATCHLIST", payload: listCopy });
     setEditList("");
+    closeErrorPopper();
   };
 
   const handleAccordionExpandState = (listID) => {
     if (!expandedAccordions.includes(listID)) {
-      setTimeout(() => {
-        setExpandedAccordions([...expandedAccordions, listID]);
-      }, 200);
+      setExpandedAccordions([...expandedAccordions, listID]);
     } else {
       setExpandedAccordions(expandedAccordions.filter((a) => a !== listID));
     }
@@ -83,15 +98,27 @@ const Watchlists = ({ props, userWatchlists, user, isTabletOrMobile }) => {
 
   const handleDeleteDialog = (listID) => {
     setOpenDialog(listID ? listID : false);
+    setTimeout(() => {
+      setErrorObject(null);
+    }, 300);
   };
 
-  const handleDialogConfirm = (listID) => {
-    setOpenDialog(false);
-    deleteWatchlist(user.token, listID, dispatchWatchlists, dispatchUser);
-    if (expandedAccordions.includes(listID)) {
-      setTimeout(() => {
-        setExpandedAccordions(expandedAccordions.filter((a) => a !== listID));
-      }, 300);
+  const handleDialogConfirm = async (listID) => {
+    try {
+      await deleteWatchlist(user.token, listID, dispatchWatchlists, dispatchUser);
+      if (expandedAccordions.includes(listID)) {
+        setTimeout(() => {
+          setExpandedAccordions(expandedAccordions.filter((a) => a !== listID));
+        }, 300);
+      }
+      setOpenDialog(false);
+    } catch (err) {
+      console.error(err);
+      if (err.response) {
+        setErrorObject({ errorText: err.response.data.error, errorCode: err.response.status });
+      } else {
+        setErrorObject({ errorText: err.message, errorCode: "NETWORK_ERROR" });
+      }
     }
   };
 
@@ -117,41 +144,48 @@ const Watchlists = ({ props, userWatchlists, user, isTabletOrMobile }) => {
   };
 
   const handleWatchlistCancel = () => {
-    let selectedList = listCopy;
-    dispatchWatchlists({ type: "PATCH_WATCHLIST", payload: selectedList });
-    setEditList("");
+    setPopperFadeDuration(1);
+    closeErrorPopper();
+    setTimeout(
+      () => {
+        let selectedList = listCopy;
+        dispatchWatchlists({ type: "PATCH_WATCHLIST", payload: selectedList });
+        setEditList("");
+        setPopperFadeDuration(350);
+      },
+      errorPopperOpen ? 100 : 0
+    );
   };
 
-  const handleWatchlistSave = (listID) => {
+  const handleWatchlistSave = async (listID) => {
     let selectedList = findListById(listID);
-    const update = { name: listName, titles: selectedList.titles };
-    // patchWatchlist(user.token, listID, update, dispatchWatchlists, dispatchUser);
-    patchWatchlist(user.token, listID + "1", update, dispatchWatchlists, dispatchUser);
-    setEditList("");
+    try {
+      const update = { name: listName, titles: selectedList.titles };
+      await patchWatchlist(user.token, listID, update, dispatchWatchlists, dispatchUser);
+
+      setEditList("");
+    } catch (err) {
+      console.error(err);
+      if (err.response) {
+        setErrorObject({ errorText: err.response.data.error, errorCode: err.response.status });
+      } else {
+        setErrorObject({ errorText: err.message, errorCode: "NETWORK_ERROR" });
+      }
+      triggerErrorPopper(confirmButtonRef.current);
+    }
   };
 
-  const handleWatchlistNew = (e) => {
-    postWatchlist(user.token, user.id, dispatchWatchlists, dispatchUser);
-  };
-
-  const handletTitleDndEnd = (e) => {
-    const { active, over } = e;
-    if (!over) return;
-    const target = active.id;
-    const targetListID = active.data.current.listID;
-    const startPosition = active.data.current.sortable.index;
-
-    let selectedList = findListById(targetListID);
-    const title = selectedList.titles.find((t) => t.imdbID === target);
-
-    if (target !== over.id) {
-      let endPosition;
-      endPosition = selectedList.titles.findIndex((t) => t.imdbID === over.id);
-
-      selectedList.titles.splice(startPosition, 1);
-      selectedList.titles.splice(endPosition, 0, title);
-
-      dispatchWatchlists({ type: "PATCH_WATCHLIST", payload: selectedList });
+  const handleWatchlistNew = () => {
+    try {
+      postWatchlist(user.token, user.id, dispatchWatchlists, dispatchUser);
+    } catch (err) {
+      console.error(err);
+      if (err.response) {
+        setErrorObject({ errorText: err.response.data.error, errorCode: err.response.status });
+      } else {
+        setErrorObject({ errorText: err.message, errorCode: "NETWORK_ERROR" });
+      }
+      triggerErrorPopper(confirmButtonRef.current);
     }
   };
 
@@ -169,92 +203,27 @@ const Watchlists = ({ props, userWatchlists, user, isTabletOrMobile }) => {
       watchlistsCopy.splice(startPosition, 1);
       watchlistsCopy.splice(endPosition, 0, selectedList);
       dispatchWatchlists({ type: "SET_WATCHLISTS", payload: watchlistsCopy });
-      updateUser(user.token, user.id, { watchlistOrder: watchlistsCopy.map((w) => w._id) }, dispatchUser);
+      try {
+        updateUser(user.token, user.id, { watchlistOrder: watchlistsCopy.map((w) => w._id) }, dispatchUser);
+      } catch (err) {
+        console.error(err);
+        if (err.response) {
+          setErrorObject({ errorText: err.response.data.error, errorCode: err.response.status });
+        } else {
+          setErrorObject({ errorText: err.message, errorCode: "NETWORK_ERROR" });
+        }
+        triggerErrorPopper(confirmButtonRef.current);
+      }
     }
-  };
-
-  const renderTitles = (l, listEdit) => {
-    const titleContent = (el) => {
-      return (
-        <div
-          className='watchlist-accordion__entry-content'
-          onClick={() => {
-            props.getMovieData(el.title, el.imdbID);
-          }}
-        >
-          <div className={`watchlist-accordion__entry-img-cont-${listView}`}>
-            <img src={el.poster} alt='Watchlist entry poster' />
-          </div>
-          <StyledWatchlistTitleText>
-            {el.title} <br /> {el.year}
-          </StyledWatchlistTitleText>
-        </div>
-      );
-    };
-
-    return (
-      <DndContext
-        sensors={sensors}
-        onDragEnd={handletTitleDndEnd}
-        modifiers={[restrictToVerticalAxis, restrictToParentElement]}
-        measuring={{
-          droppable: {
-            strategy: MeasuringStrategy.Always,
-          },
-        }}
-      >
-        <SortableContext items={l.titles.map((t) => t.imdbID)} strategy={verticalListSortingStrategy}>
-          <TransitionGroup component={null}>
-            {l.titles.map((el) => {
-              const nodeRef = createRef();
-              return (
-                <CSSTransition key={el.imdbID} timeout={300} classNames='item' nodeRef={nodeRef}>
-                  <SortableTitleItem
-                    key={el.imdbID}
-                    id={el.imdbID}
-                    listID={l._id}
-                    listEdit={listEdit}
-                    nodeRef={nodeRef}
-                  >
-                    <div className='watchlist-accordion__entry'>
-                      <Link
-                        to='/'
-                        className={listEdit ? "link-no-hover" : ""}
-                        onClick={(e) => {
-                          listEdit && e.preventDefault();
-                        }}
-                      >
-                        {titleContent(el)}
-                      </Link>
-
-                      {listEdit && (
-                        <StyledWatchlistTitleRemoveButton
-                          className='fade-in'
-                          id='watchlistTitleRemoveBtn'
-                          onClick={() => handleWatchlistTitleRemove(l._id, el.imdbID)}
-                        >
-                          <Clear />
-                        </StyledWatchlistTitleRemoveButton>
-                      )}
-                    </div>
-                  </SortableTitleItem>
-                </CSSTransition>
-              );
-            })}
-          </TransitionGroup>
-        </SortableContext>
-      </DndContext>
-    );
   };
 
   const renderAccordion = (l) => {
     const selectedForEdit = editList.includes(l._id);
     return (
       <Accordion
+        className='watchlist-accordion__component'
         onChange={handleAccordionEdit}
         sx={{
-          margin: `${isTabletOrMobile ? "0 1rem 0 0" : "0"}`,
-          width: "95%",
           backgroundColor: "#222222",
         }}
       >
@@ -292,7 +261,16 @@ const Watchlists = ({ props, userWatchlists, user, isTabletOrMobile }) => {
           {l.titles.length === 0 ? (
             <Typography sx={{ color: "white" }}>No titles yet </Typography>
           ) : (
-            <ol className='watchlist-accordion__titles'>{renderTitles(l, selectedForEdit ? true : false)}</ol>
+            <ol className='watchlist-accordion__titles'>
+              <WatchlistTitlesList
+                currentWatchlist={l}
+                isTabletOrMobile={isTabletOrMobile}
+                listView={listView}
+                editList={editList === l._id}
+                getMovieData={props.getMovieData}
+                handleWatchlistTitleRemove={handleWatchlistTitleRemove}
+              />
+            </ol>
           )}
           <WatchlistsControlsEdit
             expandedAccordions={expandedAccordions}
@@ -305,7 +283,14 @@ const Watchlists = ({ props, userWatchlists, user, isTabletOrMobile }) => {
             handleWatchlistCancel={handleWatchlistCancel}
             handleWatchlistSave={handleWatchlistSave}
             listID={l._id}
+            confirmButtonRef={confirmButtonRef}
             openDialog={openDialog}
+            anchorEl={anchorEl}
+            errorPopperOpen={errorPopperOpen}
+            closeErrorPopper={closeErrorPopper}
+            errorObject={errorObject}
+            fadeDuration={popperFadeDuration}
+            color='black'
           />
         </StyledAccordionDetailsWatchlist>
       </Accordion>
@@ -369,7 +354,7 @@ const Watchlists = ({ props, userWatchlists, user, isTabletOrMobile }) => {
             Your lists will appear here.
           </Typography>
         )}
-        <WatchlistsControlsNew handleWatchlistNew={handleWatchlistNew} />
+        <WatchlistsControlsAdd handleWatchlistNew={handleWatchlistNew} />
       </article>
     </Fade>
   );

@@ -7,8 +7,9 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Divider } from "@mui/joy";
 import { StyledButton } from "./StyledComponents/StyledComponentsUtility";
+import { ErrorMessage } from "./Errors";
 
-const ConfirmDialog = ({ open, handleClose, title, text, fontSize, fontWeight, confirm, delay }) => {
+const ConfirmDialog = ({ open, handleClose, title, text, fontSize, fontWeight, confirm, delay, errorObject }) => {
   const [confirmDisabled, setConfirmDisabled] = useState(false);
 
   useEffect(() => {
@@ -24,8 +25,8 @@ const ConfirmDialog = ({ open, handleClose, title, text, fontSize, fontWeight, c
     <Dialog
       open={open}
       onClose={handleClose}
-      aria-labelledby='alert-dialog-title'
-      aria-describedby='alert-dialog-description'
+      aria-labelledby='alert-dialog'
+      aria-describedby='confirmation-alert-dialog'
       maxWidth='sm'
       fullWidth
       sx={{
@@ -42,14 +43,11 @@ const ConfirmDialog = ({ open, handleClose, title, text, fontSize, fontWeight, c
     >
       <DialogTitle id='alert-dialog-title'>{title}</DialogTitle>
       {text && <Divider />}
-      {text && (
+
+      {errorObject && (
         <DialogContent>
-          <DialogContentText
-            id='alert-dialog-description'
-            color='#fff'
-            sx={{ fontWeight: `${fontWeight ? fontWeight : "400"}`, fontSize: `${fontSize ? fontSize : "18px"}` }}
-          >
-            {text}
+          <DialogContentText component='div' className='fade-in' color='#fff'>
+            <ErrorMessage errorText={errorObject.errorText} errorCode={errorObject.errorCode} fontSize={"18px"} />
           </DialogContentText>
         </DialogContent>
       )}

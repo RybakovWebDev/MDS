@@ -5,7 +5,16 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Box, Fade, Typography } from "@mui/material";
 import { Caret } from "./StyledComponents/StyledComponentsUtility";
 
-export const ErrorPopper = ({ anchorEl, open, onClose, errorText, errorCode, color }) => {
+export const ErrorPopper = ({
+  anchorEl,
+  open,
+  onClose,
+  errorText,
+  errorCode,
+  color,
+  isTabletOrMobile,
+  fadeDuration,
+}) => {
   const errorPopperID = open ? "errorPopper" : undefined;
 
   return (
@@ -14,7 +23,7 @@ export const ErrorPopper = ({ anchorEl, open, onClose, errorText, errorCode, col
       open={open}
       anchorEl={anchorEl}
       placement='bottom'
-      disablePortal
+      // disablePortal
       transition
       modifiers={[
         {
@@ -27,7 +36,7 @@ export const ErrorPopper = ({ anchorEl, open, onClose, errorText, errorCode, col
       sx={{ zIndex: 100 }}
     >
       {({ TransitionProps }) => (
-        <Fade {...TransitionProps} timeout={350}>
+        <Fade {...TransitionProps} timeout={fadeDuration ? fadeDuration : 350}>
           <Box
             sx={{
               margin: "1rem 1rem 0 1rem",
@@ -39,7 +48,7 @@ export const ErrorPopper = ({ anchorEl, open, onClose, errorText, errorCode, col
               backgroundColor: "#fff",
             }}
           >
-            <Caret sx={{ margin: "1rem 0 0 0" }} />
+            {!isTabletOrMobile && <Caret sx={{ margin: "1rem 0 0 0" }} />}
             <IconButton aria-label='close' onClick={onClose}>
               <CloseIcon />
             </IconButton>
@@ -61,7 +70,7 @@ export const ErrorPopper = ({ anchorEl, open, onClose, errorText, errorCode, col
 export const ErrorMessage = (props) => {
   const { noNotification, fontSize, errorText, errorCode, color } = props;
   return (
-    <section className='error-parent-cont'>
+    <div className='error-parent-cont'>
       <div className='error-message'>
         <Typography sx={{ color: color ? color : "#fff", fontSize: fontSize ? fontSize : "22px" }}>
           {!noNotification && `${"There's been an error! 😥"}`}
@@ -70,6 +79,6 @@ export const ErrorMessage = (props) => {
           {errorCode && ` Error code: ${errorCode}.`}
         </Typography>
       </div>
-    </section>
+    </div>
   );
 };

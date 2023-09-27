@@ -19,7 +19,6 @@ export const useAuth = () => {
     try {
       const json = isLogin ? await loginUser(user) : await createUser(user);
       localStorage.setItem("user", JSON.stringify(json.data));
-
       dispatchUser({ type: "LOGIN_USER", payload: json.data });
       setIsLoading(false);
       navigate("/");

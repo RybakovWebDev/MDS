@@ -104,12 +104,12 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
     try {
       setName(name.trim());
       inputRef.current.value = null;
-      updateUser(user.token, user.id, { name: name }, dispatchUser);
+      await updateUser(user.token, user.id, { name: name }, dispatchUser);
       if (file) {
         setWaitingForBackend(true);
         const newImage = await uploadImage(user.token, user.id, file);
         inputRef.current.value = null;
-        updateUser(user.token, user.id, { image: newImage?.location ? newImage?.location : "" }, dispatchUser);
+        await updateUser(user.token, user.id, { image: newImage?.location ? newImage?.location : "" }, dispatchUser);
         setWaitingForBackend(false);
       }
       if (!image && user.image) {
@@ -117,7 +117,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
         const fileName = user.image.split("/").slice(-1)[0];
         const deleteImageResult = await deleteImage(user.token, user.id, fileName);
         deleteImageResult.message =
-          "File deleted successfully" && updateUser(user.token, user.id, { image: "" }, dispatchUser);
+          "File deleted successfully" && (await updateUser(user.token, user.id, { image: "" }, dispatchUser));
         setWaitingForBackend(false);
       }
       setEdit(false);
@@ -259,6 +259,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
             errorText={errorObject?.errorText}
             errorCode={errorObject?.errorCode}
             color='black'
+            isTabletOrMobile={isTabletOrMobile}
           />
         </div>
       ) : (

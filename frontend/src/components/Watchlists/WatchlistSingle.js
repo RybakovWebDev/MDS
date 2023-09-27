@@ -1,34 +1,17 @@
-import React, { createRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import {
-  DndContext,
-  KeyboardSensor,
-  MeasuringStrategy,
-  PointerSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { Divider } from "@mui/material";
-import { Clear } from "@mui/icons-material";
 
 import WatchlistsControlsEdit from "./WatchlistsControlsEdit";
 import WatchlistsControlsView from "./WatchlistsControlsView";
-import SortableTitleItem from "./SortableTitleItem";
-import {
-  StyledWatchlistNameTextfield,
-  StyledWatchlistTitleRemoveButton,
-  StyledWatchlistTitleText,
-} from "../Utility/StyledComponents/StyledComponentsWatchlist";
+import { StyledWatchlistNameTextfield } from "../Utility/StyledComponents/StyledComponentsWatchlist";
 import { WhiteSpinner } from "../Utility/StyledComponents/StyledComponentsUtility";
 
 import { useWatchlistContext } from "../../hooks/useWatchlistContext";
-import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { deleteWatchlist, patchWatchlist } from "../../services/CrudService";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import WatchlistTitlesList from "./WatchlistTitlesList";
 
 const WatchlistSingle = ({ props, user, watchlist, isTabletOrMobile }) => {
   const { watchlists, dispatchWatchlists } = useWatchlistContext();
@@ -40,16 +23,26 @@ const WatchlistSingle = ({ props, user, watchlist, isTabletOrMobile }) => {
   const [listName, setListName] = useState(currentWatchlist?.name);
   const [listCopy, setListCopy] = useState({});
   const [listView, setListView] = useState("large");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [errorObject, setErrorObject] = useState({});
+  const [errorPopperOpen, setErrorPopperOpen] = useState(false);
+  const [popperFadeDuration, setPopperFadeDuration] = useState(350);
 
   const navigate = useNavigate();
+  const confirmButtonRef = useRef();
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(TouchSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
+  const triggerErrorPopper = (target) => {
+    setAnchorEl(target);
+    setErrorPopperOpen(true);
+  };
+
+  const closeErrorPopper = () => {
+    setErrorPopperOpen(false);
+    setTimeout(() => {
+      setAnchorEl(null);
+      setErrorObject(null);
+    }, 300);
+  };
 
   const handleWatchlistEdit = (listID) => {
     setListCopy(JSON.parse(JSON.stringify(currentWatchlist)));
@@ -68,44 +61,55 @@ const WatchlistSingle = ({ props, user, watchlist, isTabletOrMobile }) => {
   };
 
   const handleWatchlistCancel = () => {
-    let currentWatchlist = listCopy;
-    setListName(listCopy.name);
-    dispatchWatchlists({ type: "PATCH_WATCHLIST", payload: currentWatchlist });
-    setEditList("");
+    setPopperFadeDuration(1);
+    closeErrorPopper();
+    setTimeout(
+      () => {
+        let currentWatchlist = listCopy;
+        setListName(listCopy.name);
+        dispatchWatchlists({ type: "PATCH_WATCHLIST", payload: currentWatchlist });
+        setEditList("");
+        setPopperFadeDuration(350);
+      },
+      errorPopperOpen ? 100 : 0
+    );
   };
 
   const handleWatchlistSave = async (listID) => {
-    const update = { name: listName, titles: currentWatchlist.titles };
-    patchWatchlist(user ? user.token : "", listID, update, dispatchWatchlists, dispatchUser);
-    setEditList("");
+    try {
+      const update = { name: listName, titles: currentWatchlist.titles };
+      await patchWatchlist(user ? user.token : "", listID, update, dispatchWatchlists, dispatchUser);
+      setEditList("");
+    } catch (err) {
+      console.error(err);
+      if (err.response) {
+        setErrorObject({ errorText: err.response.data.error, errorCode: err.response.status });
+      } else {
+        setErrorObject({ errorText: err.message, errorCode: "NETWORK_ERROR" });
+      }
+      triggerErrorPopper(confirmButtonRef.current);
+    }
   };
 
   const handleDeleteDialog = (listID) => {
     setOpenDialog(listID ? listID : false);
+    setTimeout(() => {
+      setErrorObject(null);
+    }, 300);
   };
 
-  const handleDialogConfirm = (listID) => {
-    setOpenDialog(false);
-    deleteWatchlist(user ? user.token : "", listID, dispatchWatchlists, dispatchUser);
-    navigate(`/profile`);
-  };
-
-  const handletTitleDndEnd = (e) => {
-    const { active, over } = e;
-    if (!over) return;
-    const target = active.id;
-    const startPosition = active.data.current.sortable.index;
-
-    const title = currentWatchlist.titles.find((t) => t.imdbID === target);
-
-    if (target !== over.id) {
-      let endPosition;
-      endPosition = currentWatchlist.titles.findIndex((t) => t.imdbID === over.id);
-
-      currentWatchlist.titles.splice(startPosition, 1);
-      currentWatchlist.titles.splice(endPosition, 0, title);
-
-      dispatchWatchlists({ type: "PATCH_WATCHLIST", payload: currentWatchlist });
+  const handleDialogConfirm = async (listID) => {
+    try {
+      await deleteWatchlist(user.token, listID, dispatchWatchlists, dispatchUser);
+      navigate(`/profile`);
+      setOpenDialog(false);
+    } catch (err) {
+      console.error(err);
+      if (err.response) {
+        setErrorObject({ errorText: err.response.data.error, errorCode: err.response.status });
+      } else {
+        setErrorObject({ errorText: err.message, errorCode: "NETWORK_ERROR" });
+      }
     }
   };
 
@@ -114,87 +118,6 @@ const WatchlistSingle = ({ props, user, watchlist, isTabletOrMobile }) => {
     if (id === "listViewLargeBtn") setListView("large");
     if (id === "listViewSmallBtn") setListView("small");
     if (id === "listViewCellsBtn") setListView("cells");
-  };
-
-  const renderTitles = (l, listEdit) => {
-    const titleContent = (el) => {
-      return (
-        <div
-          className='watchlist-accordion__entry-content'
-          onClick={() => {
-            props.getMovieData(el.title, el.imdbID);
-          }}
-        >
-          <div className={`watchlist-accordion__entry-img-cont-${listView}`}>
-            <img src={el.poster} alt='Watchlist entry poster' />
-          </div>
-          {listView !== "cells" && (
-            <StyledWatchlistTitleText>
-              {el.title} <br /> {el.year}
-            </StyledWatchlistTitleText>
-          )}
-        </div>
-      );
-    };
-
-    return (
-      <DndContext
-        sensors={sensors}
-        onDragEnd={handletTitleDndEnd}
-        modifiers={[restrictToVerticalAxis, restrictToParentElement]}
-        measuring={{
-          droppable: {
-            strategy: MeasuringStrategy.Always,
-          },
-        }}
-      >
-        <SortableContext items={l.titles.map((t) => t.imdbID)} strategy={verticalListSortingStrategy}>
-          <TransitionGroup component={null}>
-            {l.titles.map((el) => {
-              const nodeRef = createRef();
-              return (
-                <CSSTransition key={el.imdbID} timeout={300} classNames='item' nodeRef={nodeRef}>
-                  <SortableTitleItem
-                    key={el.imdbID}
-                    id={el.imdbID}
-                    listID={l._id}
-                    listEdit={editList}
-                    nodeRef={nodeRef}
-                    listViewCells={listView === "cells"}
-                    isTabletOrMobile={isTabletOrMobile}
-                  >
-                    <div className='watchlist-accordion__entry'>
-                      <Link
-                        to='/'
-                        className={`${editList ? "link-no-hover" : ""}${
-                          listView === "cells" && !editList ? "link-no-hover-cells" : ""
-                        }`}
-                        onClick={(e) => {
-                          listEdit && e.preventDefault();
-                        }}
-                      >
-                        {titleContent(el)}
-                      </Link>
-
-                      {editList && (
-                        <StyledWatchlistTitleRemoveButton
-                          className='fade-in'
-                          id='watchlistTitleRemoveBtn'
-                          onClick={() => handleWatchlistTitleRemove(l._id, el.imdbID)}
-                          sx={{ margin: `${isTabletOrMobile ? "0 0.5rem 0 0.5rem" : "0"}` }}
-                        >
-                          <Clear />
-                        </StyledWatchlistTitleRemoveButton>
-                      )}
-                    </div>
-                  </SortableTitleItem>
-                </CSSTransition>
-              );
-            })}
-          </TransitionGroup>
-        </SortableContext>
-      </DndContext>
-    );
   };
 
   return (
@@ -226,6 +149,13 @@ const WatchlistSingle = ({ props, user, watchlist, isTabletOrMobile }) => {
                 listID={currentWatchlist._id}
                 openDialog={openDialog}
                 watchlistSingle={true}
+                confirmButtonRef={confirmButtonRef}
+                anchorEl={anchorEl}
+                errorPopperOpen={errorPopperOpen}
+                closeErrorPopper={closeErrorPopper}
+                errorObject={errorObject}
+                fadeDuration={popperFadeDuration}
+                color='black'
               />
             )}
             <div>
@@ -240,7 +170,14 @@ const WatchlistSingle = ({ props, user, watchlist, isTabletOrMobile }) => {
           </div>
           <div className={listView === "cells" ? "watchlist-single--view-cells" : ""}>
             {listView !== "cells" && <Divider sx={{ m: "0.5rem 0 0.5rem 0", backgroundColor: "#595959" }} />}
-            {renderTitles(currentWatchlist)}
+            <WatchlistTitlesList
+              currentWatchlist={currentWatchlist}
+              isTabletOrMobile={isTabletOrMobile}
+              listView={listView}
+              editList={editList}
+              getMovieData={props.getMovieData}
+              handleWatchlistTitleRemove={handleWatchlistTitleRemove}
+            />
           </div>
         </>
       ) : (

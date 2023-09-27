@@ -4,6 +4,7 @@ import { Check, Clear, DeleteForever, Edit, OpenInNew } from "@mui/icons-materia
 
 import ConfirmDialog from "../Utility/ConfirmDialog";
 import { StyledButton } from "../Utility/StyledComponents/StyledComponentsUtility";
+import { ErrorPopper } from "../Utility/Errors";
 
 const WatchlistsControlsEdit = ({
   showControls,
@@ -18,6 +19,12 @@ const WatchlistsControlsEdit = ({
   handleWatchlistCancel,
   handleWatchlistSave,
   watchlistSingle,
+  confirmButtonRef,
+  anchorEl,
+  errorPopperOpen,
+  closeErrorPopper,
+  errorObject,
+  fadeDuration,
 }) => {
   // const [showControls, setShowControls] = useState(false);
 
@@ -50,6 +57,7 @@ const WatchlistsControlsEdit = ({
           handleClose={() => handleDeleteDialog()}
           title={"Delete this list?"}
           confirm={() => handleDialogConfirm(listID)}
+          errorObject={errorObject}
         />
         {editList === listID ? (
           <>
@@ -64,6 +72,7 @@ const WatchlistsControlsEdit = ({
             </StyledButton>
             <StyledButton
               id='watchlistSaveBtn'
+              ref={confirmButtonRef}
               type='button'
               variant='outlined'
               sx={{ m: "1rem 1rem 1rem 0" }}
@@ -85,7 +94,7 @@ const WatchlistsControlsEdit = ({
         )}
         {handleWatchlistOpen && (
           <StyledButton
-            id='watchlistEditBtn'
+            id='watchlistOpenBtn'
             type='button'
             variant='outlined'
             sx={{ m: "1rem 2rem 1rem 0" }}
@@ -94,6 +103,15 @@ const WatchlistsControlsEdit = ({
             <OpenInNew />
           </StyledButton>
         )}
+        <ErrorPopper
+          anchorEl={anchorEl}
+          open={errorPopperOpen}
+          onClose={closeErrorPopper}
+          errorText={errorObject?.errorText}
+          errorCode={errorObject?.errorCode}
+          color='black'
+          fadeDuration={fadeDuration}
+        />
       </div>
     )
   );

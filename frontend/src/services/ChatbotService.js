@@ -6,5 +6,6 @@ export const postMessage = async (userMessage) => {
     return response.data.chatbotResponse;
   } catch (err) {
     console.error("Can't send message: ", err);
+    throw err;
   }
 };

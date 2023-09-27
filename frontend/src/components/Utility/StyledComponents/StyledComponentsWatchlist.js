@@ -80,15 +80,18 @@ export const StyledWatchlistNameInput = styled(Input)(({ theme }) => ({
   },
 }));
 
-export const StyledWatchlistTitleText = styled(Typography)(({ theme }) => ({
-  margin: "0 0 0 1rem",
-  color: "white",
-  fontSize: "16px",
-  [theme.breakpoints.down("1279")]: {
-    margin: "0 1rem 0 1rem",
-    fontSize: "14px",
-  },
-}));
+export const StyledWatchlistTitleText = styled(({ large, ...otherProps }) => <Typography {...otherProps} />)(
+  ({ theme, large }) => ({
+    margin: "0 0 0 1rem",
+    color: "white",
+    fontSize: "16px",
+    [theme.breakpoints.down("1279")]: {
+      margin: `0 0 0 ${large ? "0.5rem" : "1rem"}`,
+      maxWidth: large ? "8rem" : "13rem",
+      fontSize: "14px",
+    },
+  })
+);
 
 export const StyledWatchlistTitleRemoveButton = styled(Button)(({ theme }) => ({
   color: "#fff",
