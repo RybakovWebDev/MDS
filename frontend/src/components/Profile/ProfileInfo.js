@@ -41,6 +41,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
     setErrorPopperOpen(true);
     setIsShaking(true);
     setTimeout(() => setIsShaking(false), 500);
+    console.error(errorObject?.errorText, " Error code: ", errorObject?.errorCode);
   };
 
   const closeErrorPopper = () => {
@@ -62,9 +63,11 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
 
     if (id === "profileInfoImageChangeInput") {
       const selectedFile = e.target.files[0];
+      console.log(selectedFile);
       const maxSize = 5 * 1024 * 1024;
       if (selectedFile.size > maxSize) {
         setErrorObject({ errorText: "File size too large! Limit is 5MB.", errorCode: "413" });
+
         triggerErrorPopper(confirmButtonRef.current);
         e.target.value = null;
         return;
@@ -76,6 +79,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
           errorText: "Invalid file type! Only .jpg, .jpeg, .heic and .png are allowed.",
           errorCode: "415",
         });
+
         triggerErrorPopper(confirmButtonRef.current);
         e.target.value = null;
         return;
