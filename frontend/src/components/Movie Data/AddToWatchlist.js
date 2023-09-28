@@ -1,4 +1,4 @@
-import { Add, Clear, Remove } from "@mui/icons-material";
+import { Add, CheckCircle, CircleOutlined, Clear } from "@mui/icons-material";
 import { Button, List, ListItem, ListItemButton } from "@mui/joy";
 import React, { useState } from "react";
 import { DialogContent, DialogTitle, ListItemText, Typography } from "@mui/material";
@@ -12,6 +12,7 @@ import {
   WhiteAddIcon,
 } from "../Utility/StyledComponents/StyledComponentsUtility";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { StyledAddToWatchlistListItemText } from "../Utility/StyledComponents/StyledComponentsWatchlist";
 
 const ListSelectDialog = ({ user, open, handleListDialog, userWatchlists, titleDataTMDB, titlePosterOMDB }) => {
   const { dispatchWatchlists } = useWatchlistContext();
@@ -48,7 +49,7 @@ const ListSelectDialog = ({ user, open, handleListDialog, userWatchlists, titleD
     <StyledDialog onClose={handleListDialog} open={open} maxWidth='sm' fullWidth>
       <DialogTitle sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography sx={{ fontSize: "20px", fontWeight: "500" }}>Where do you want to add this movie?</Typography>
-        <StyledButtonSmall variant='outlined' onClick={handleListDialog}>
+        <StyledButtonSmall variant='outlined' onClick={handleListDialog} sx={{ maxHeight: "2rem" }}>
           <Clear />
         </StyledButtonSmall>
       </DialogTitle>
@@ -64,13 +65,20 @@ const ListSelectDialog = ({ user, open, handleListDialog, userWatchlists, titleD
             userWatchlists.map((list) => {
               const isInList = list.titles.some((el) => el.imdbID === titleDataTMDB.imdb_id);
               return (
-                <ListItem key={list._id}>
-                  <ListItemButton selected={true} onClick={(e) => handleListItem(e, list._id)} sx={{ height: "3rem" }}>
+                <ListItem
+                  key={list._id}
+                  sx={{ margin: "0", padding: "1rem 0.5rem 1rem 0.5rem", borderBottom: "1px solid #333333" }}
+                >
+                  <ListItemButton
+                    selected={true}
+                    onClick={(e) => handleListItem(e, list._id)}
+                    sx={{ minHeight: "3rem" }}
+                  >
+                    <StyledAddToWatchlistListItemText primary={list.name} />
                     <div className='add-watchlist__icon-wrapper'>
-                      <FadeIcon component={Add} visible={!isInList} />
-                      <FadeIcon component={Remove} visible={isInList} />
+                      <FadeIcon component={CircleOutlined} visible={!isInList} />
+                      <FadeIcon component={CheckCircle} visible={isInList} />
                     </div>
-                    <ListItemText primary={list.name} sx={{ marginLeft: "1rem", color: "#fff" }} />
                   </ListItemButton>
                 </ListItem>
               );
@@ -80,7 +88,7 @@ const ListSelectDialog = ({ user, open, handleListDialog, userWatchlists, titleD
               <div className='add-watchlist__icon-wrapper'>
                 <WhiteAddIcon />
               </div>
-              <ListItemText primary='New list' sx={{ marginLeft: "1rem", color: "#fff" }} />
+              <ListItemText primary='Create new list' sx={{ marginLeft: "1rem", color: "#fff" }} />
             </ListItemButton>
           </ListItem>
         </List>

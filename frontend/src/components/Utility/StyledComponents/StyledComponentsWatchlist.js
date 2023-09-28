@@ -1,5 +1,5 @@
 import { Input } from "@mui/joy";
-import { AccordionDetails, AccordionSummary, Button, TextField, Typography, styled } from "@mui/material";
+import { AccordionDetails, AccordionSummary, Button, ListItemText, TextField, Typography, styled } from "@mui/material";
 
 export const StyledWatchlistNameTextfield = styled(TextField)(({ theme }) => ({
   width: "100%",
@@ -104,5 +104,17 @@ export const StyledWatchlistTitleRemoveButton = styled(Button)(({ theme }) => ({
   minWidth: "2rem",
   [theme.breakpoints.down("1279")]: {
     padding: "0",
+  },
+}));
+
+export const StyledAddToWatchlistListItemText = styled(ListItemText)(({ theme }) => ({
+  marginRight: "1rem",
+  maxWidth: "90%",
+  color: "#fff",
+  [theme.breakpoints.down("1279")]: {
+    maxWidth: "80%",
+  },
+  [theme.breakpoints.down("350")]: {
+    maxWidth: "72%",
   },
 }));

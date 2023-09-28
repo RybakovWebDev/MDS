@@ -135,6 +135,7 @@
 }
 
 .add-watchlist {
+  margin: 0 0 0 2rem;
   display: flex;
   align-items: center;
 }
@@ -269,7 +270,7 @@
 .movie-cast ::-webkit-scrollbar-thumb {
   background: rgb(136, 136, 136);
   border-radius: 3rem;
-
+  min-width: 70px;
   border: 12px #333333 solid;
 }
 
@@ -722,13 +723,17 @@
 
   .movie-data__ratings td {
     position: relative;
-    height: 4rem;
+    height: 5rem;
   }
 
   .movie-data__ratings-score {
     position: absolute;
     bottom: 0;
     font-size: 18px;
+  }
+
+  .add-watchlist {
+    margin: 0 0 0 1rem;
   }
 
   .movie-card__bottom {

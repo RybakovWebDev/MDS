@@ -72,7 +72,7 @@ const createUser = [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       const errorMessages = errors.array().map(({ msg }) => msg);
-      return errorHelper(new Error(), errorMessages.join("; "), err.code || err.status || 400, next);
+      return errorHelper(new Error(), errorMessages.join("; "), 400, next);
     }
 
     const { email, password } = req.body;
