@@ -64,7 +64,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
     if (id === "profileInfoImageChangeInput") {
       const selectedFile = e.target.files[0];
       console.log(selectedFile);
-      const maxSize = 5 * 1024 * 1024;
+      const maxSize = 10 * 1024 * 1024;
       if (selectedFile.size > maxSize) {
         setErrorObject({ errorText: "File size too large! Limit is 5MB.", errorCode: "413" });
 
