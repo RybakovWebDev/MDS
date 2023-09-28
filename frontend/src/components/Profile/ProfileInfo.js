@@ -15,6 +15,7 @@ import {
   StyledProfileNameTextfield,
 } from "../Utility/StyledComponents/StyledComponentsProfile";
 import { StyledButton, StyledButtonSmall, WhiteSpinner } from "../Utility/StyledComponents/StyledComponentsUtility";
+import heic2any from "heic2any";
 
 const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
   const [edit, setEdit] = useState(false);
@@ -58,6 +59,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
     if (id === "profileInfoNameInput") {
       setName(value);
     }
+
     if (id === "profileInfoImageChangeInput") {
       const selectedFile = e.target.files[0];
       const maxSize = 5 * 1024 * 1024;
@@ -68,25 +70,37 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
         return;
       }
       const fileExtension = selectedFile.name.split(".").pop().toLowerCase();
-      const validExtensions = ["jpg", "jpeg", "png"];
+      const validExtensions = ["jpg", "jpeg", "png", "heic"];
       if (!validExtensions.includes(fileExtension)) {
         setErrorObject({
-          errorText: "Invalid file type! Only .jpg, .jpeg, and .png are allowed.",
+          errorText: "Invalid file type! Only .jpg, .jpeg, .heic and .png are allowed.",
           errorCode: "415",
         });
         triggerErrorPopper(confirmButtonRef.current);
         e.target.value = null;
         return;
       }
-      setFile(selectedFile);
-      setImage(URL.createObjectURL(selectedFile));
+      if (fileExtension === "heic") {
+        const convertedBlob = await heic2any({
+          blob: selectedFile,
+          toType: "image/jpeg",
+          quality: 0.5,
+        });
+        setFile(new File([convertedBlob], selectedFile.name.replace(/\..+$/, ".jpeg"), { type: "image/jpeg" }));
+        setImage(URL.createObjectURL(convertedBlob));
+      } else {
+        setFile(selectedFile);
+        setImage(URL.createObjectURL(selectedFile));
+      }
       e.target.value = null;
     }
+
     if (id === "profileInfoImageRemoveBtn") {
       setImage("");
       setFile(null);
       inputRef.current.value = null;
     }
+
     if (id === "profileInfoEditBtn") {
       setEdit(true);
     }
@@ -106,6 +120,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
       inputRef.current.value = null;
       await updateUser(user.token, user.id, { name: name }, dispatchUser);
       if (file) {
+        console.log("File for upload: ", file);
         setWaitingForBackend(true);
         const newImage = await uploadImage(user.token, user.id, file);
         inputRef.current.value = null;
@@ -183,7 +198,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
                 id='profileInfoImageChangeInput'
                 hidden
                 name='fileInput'
-                accept='image/png, image/jpeg, image/jpg'
+                accept='image/png, image/jpeg, image/jpg, image/heic'
                 type='file'
                 onChange={handleProfileInfo}
                 ref={inputRef}

@@ -12,7 +12,7 @@ const multerUpload = multer({
       !acceptableMimeTypes.includes(file.mimetype) ||
       !acceptableExtensions.includes(path.extname(file.originalname).toLowerCase())
     ) {
-      return callback(new Error("Only .png, .jpg and .jpeg files are allowed"));
+      return callback(new Error("Only .png, .heic, .jpg and .jpeg files are allowed"));
     }
     callback(null, true);
   },

@@ -110,11 +110,16 @@ const uploadFile = async (req, res, next) => {
     const s3 = await getS3();
     const { file } = req;
     const { userID } = req.body;
-    if (["image/png", "image/jpeg"].includes(file.mimetype)) {
-      const outputBuffer = await sharp(file.buffer).jpeg({ quality: 60 }).toBuffer();
-      file.buffer = outputBuffer;
+    let buffer = file.buffer;
+    if (file.mimetype === "image/heic") {
+      buffer = await sharp(file.buffer).jpeg({ quality: 60 }).toBuffer();
+      file.mimetype = "image/jpeg";
+    } else if (["image/png", "image/jpeg"].includes(file.mimetype)) {
+      buffer = await sharp(file.buffer).jpeg({ quality: 60 }).toBuffer();
       file.mimetype = "image/jpeg";
     }
+
+    file.buffer = buffer;
     const { location, oldFileName } = await uploadFileToS3(s3, file, userID);
     if (oldFileName) {
       await deleteFileFromS3(s3, userID, oldFileName);

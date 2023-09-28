@@ -3,7 +3,7 @@ const multer = require("multer");
 const errorHandler = (error, req, res, next) => {
   let status;
   let message;
-
+  console.error(error);
   if (error instanceof multer.MulterError) {
     status = error.code === "LIMIT_FILE_SIZE" ? 413 : 400;
     message = error.message;
