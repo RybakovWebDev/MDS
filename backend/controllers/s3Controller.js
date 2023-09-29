@@ -112,10 +112,10 @@ const uploadFile = async (req, res, next) => {
     const { userID } = req.body;
     let buffer = file.buffer;
     if (file.mimetype === "image/heic") {
-      buffer = await sharp(file.buffer).jpeg({ quality: 60 }).toBuffer();
+      buffer = await sharp(file.buffer).rotate().jpeg({ quality: 60 }).toBuffer();
       file.mimetype = "image/jpeg";
     } else if (["image/png", "image/jpeg"].includes(file.mimetype)) {
-      buffer = await sharp(file.buffer).jpeg({ quality: 60 }).toBuffer();
+      buffer = await sharp(file.buffer).rotate().jpeg({ quality: 60 }).toBuffer();
       file.mimetype = "image/jpeg";
     }
 

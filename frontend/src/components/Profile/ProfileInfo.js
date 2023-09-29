@@ -63,40 +63,45 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
 
     if (id === "profileInfoImageChangeInput") {
       const selectedFile = e.target.files[0];
-      console.log(selectedFile);
-      const maxSize = 10 * 1024 * 1024;
-      if (selectedFile.size > maxSize) {
-        setErrorObject({ errorText: "File size too large! Limit is 5MB.", errorCode: "413" });
+      const reader = new FileReader();
+      reader.onloadend = async function (evt) {
+        if (evt.target.readyState === FileReader.DONE) {
+          const arrayBuffer = evt.target.result;
+          const maxSize = 5 * 1024 * 1024;
+          if (arrayBuffer.byteLength > maxSize) {
+            setErrorObject({ errorText: "File size too large! Limit is 5MB.", errorCode: "413" });
+            triggerErrorPopper(confirmButtonRef.current);
+            e.target.value = null;
+            return;
+          }
+          const fileExtension = selectedFile.name.split(".").pop().toLowerCase();
+          const validExtensions = ["jpg", "jpeg", "png", "heic"];
+          if (!validExtensions.includes(fileExtension)) {
+            setErrorObject({
+              errorText: "Invalid file type! Only .jpg, .jpeg, .heic and .png are allowed.",
+              errorCode: "415",
+            });
 
-        triggerErrorPopper(confirmButtonRef.current);
-        e.target.value = null;
-        return;
-      }
-      const fileExtension = selectedFile.name.split(".").pop().toLowerCase();
-      const validExtensions = ["jpg", "jpeg", "png", "heic"];
-      if (!validExtensions.includes(fileExtension)) {
-        setErrorObject({
-          errorText: "Invalid file type! Only .jpg, .jpeg, .heic and .png are allowed.",
-          errorCode: "415",
-        });
-
-        triggerErrorPopper(confirmButtonRef.current);
-        e.target.value = null;
-        return;
-      }
-      if (fileExtension === "heic") {
-        const convertedBlob = await heic2any({
-          blob: selectedFile,
-          toType: "image/jpeg",
-          quality: 0.5,
-        });
-        setFile(new File([convertedBlob], selectedFile.name.replace(/\..+$/, ".jpeg"), { type: "image/jpeg" }));
-        setImage(URL.createObjectURL(convertedBlob));
-      } else {
-        setFile(selectedFile);
-        setImage(URL.createObjectURL(selectedFile));
-      }
-      e.target.value = null;
+            triggerErrorPopper(confirmButtonRef.current);
+            e.target.value = null;
+            return;
+          }
+          if (fileExtension === "heic") {
+            const convertedBlob = await heic2any({
+              blob: selectedFile,
+              toType: "image/jpeg",
+              quality: 0.5,
+            });
+            setFile(new File([convertedBlob], selectedFile.name.replace(/\..+$/, ".jpeg"), { type: "image/jpeg" }));
+            setImage(URL.createObjectURL(convertedBlob));
+          } else {
+            setFile(selectedFile);
+            setImage(URL.createObjectURL(selectedFile));
+          }
+          e.target.value = null;
+        }
+      };
+      reader.readAsArrayBuffer(selectedFile);
     }
 
     if (id === "profileInfoImageRemoveBtn") {
@@ -124,7 +129,6 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
       inputRef.current.value = null;
       await updateUser(user.token, user.id, { name: name }, dispatchUser);
       if (file) {
-        console.log("File for upload: ", file);
         setWaitingForBackend(true);
         const newImage = await uploadImage(user.token, user.id, file);
         inputRef.current.value = null;
