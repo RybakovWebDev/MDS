@@ -15,7 +15,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  mask: linear-gradient(to right, #0000, #000 0%, #000 70%, #0000);
+  mask: linear-gradient(to right, #0000, #000 30%, #000 70%, #0000);
   overflow: hidden;
 }
 

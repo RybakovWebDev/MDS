@@ -38,6 +38,7 @@ const FinalView = (props) => {
         inputMode={inputMode}
         handleModeSwitch={handleModeSwitch}
         isLoadingMovieData={isLoadingMovieData}
+        isTabletOrMobile={isTabletOrMobile}
       />
       <Routes>
         <Route

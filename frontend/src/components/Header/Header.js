@@ -18,6 +18,7 @@ const Header = ({
   handleModeSwitch,
   searchTop,
   isLoadingMovieData,
+  isTabletOrMobile,
 }) => {
   const [authOpen, setAuthOpen] = useState(false);
   const [authSwitch, setAuthSwitch] = useState(false);
@@ -44,7 +45,7 @@ const Header = ({
   };
 
   return (
-    <header className={`header${!searchTop && onHomePage ? " fixed" : ""}`}>
+    <header className={`header${!searchTop && onHomePage && isTabletOrMobile ? " fixed" : ""}`}>
       <div className='header__wrapper'>
         <div className='header__group'>
           <nav aria-label='Main navigation'>
