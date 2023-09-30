@@ -23,7 +23,7 @@ const Home = ({
   }, [setOnHomePage, setShowPopular]);
 
   return (
-    <section className='home'>
+    <section className={`home${!showMov && isTabletOrMobile ? " topMargin6rem" : ""}`}>
       <MainInput
         personPlaceholder={personPlaceholder}
         TMDBConfigData={TMDBConfigData}

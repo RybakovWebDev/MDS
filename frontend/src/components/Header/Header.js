@@ -44,7 +44,7 @@ const Header = ({
   };
 
   return (
-    <header className='header'>
+    <header className={`header${!searchTop && onHomePage ? " fixed" : ""}`}>
       <div className='header__wrapper'>
         <div className='header__group'>
           <nav aria-label='Main navigation'>
