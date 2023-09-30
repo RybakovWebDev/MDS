@@ -17,6 +17,7 @@ function App() {
   const { logout } = useAuth();
   const { watchlists, dispatchWatchlists } = useWatchlistContext();
   const [onHomePage, setOnHomePage] = useState(true);
+  const [onWatchlistPage, setOnWatchlistPage] = useState(false);
   const [popularTMDB, setPopularTMDB] = useState("");
   const [showPopular, setShowPopular] = useState(false);
   const [inputMode, setInputMode] = useState("search");
@@ -168,7 +169,7 @@ function App() {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && !onWatchlistPage) {
       getWatchlists(user.token, user.id, dispatchWatchlists, dispatchUser);
     }
   }, [user, dispatchWatchlists, dispatchUser]);
@@ -177,6 +178,7 @@ function App() {
     <FinalView
       onHomePage={onHomePage}
       setOnHomePage={setOnHomePage}
+      setOnWatchlistPage={setOnWatchlistPage}
       user={user}
       logout={logout}
       watchlists={watchlists}

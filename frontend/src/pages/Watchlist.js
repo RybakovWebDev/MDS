@@ -8,7 +8,7 @@ import { getSingleWatchlist } from "../services/CrudService";
 import { useWatchlistContext } from "../hooks/useWatchlistContext";
 import { Typography } from "@mui/material";
 
-const Watchlist = ({ props, userWatchlists, user, setOnHomePage, isTabletOrMobile }) => {
+const Watchlist = ({ props, userWatchlists, user, setOnHomePage, setOnWatchlistPage, isTabletOrMobile }) => {
   const [watchlist, setWatchlist] = useState(null);
   const { id } = useParams();
   const { dispatchWatchlists, isLoading: watchlistIsLoading } = useWatchlistContext();
@@ -19,7 +19,8 @@ const Watchlist = ({ props, userWatchlists, user, setOnHomePage, isTabletOrMobil
 
   useEffect(() => {
     setOnHomePage(false);
-  }, [setOnHomePage]);
+    setOnWatchlistPage(true);
+  }, [setOnHomePage, setOnWatchlistPage]);
 
   useEffect(() => {
     const fetchWatchlist = async () => {

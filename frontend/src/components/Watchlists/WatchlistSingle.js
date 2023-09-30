@@ -136,7 +136,7 @@ const WatchlistSingle = ({ props, user, watchlist, isTabletOrMobile }) => {
             />
           </div>
           <div className='watchlist-single__controls-wrapper'>
-            {user && (
+            {user && user.id === currentWatchlist?.author && (
               <WatchlistsControlsEdit
                 showControls={true}
                 editList={editList}

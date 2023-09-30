@@ -18,6 +18,7 @@ const FinalView = (props) => {
     clearMovData,
     onHomePage,
     setOnHomePage,
+    setOnWatchlistPage,
     showMov,
     searchTop,
     inputMode,
@@ -80,6 +81,7 @@ const FinalView = (props) => {
               userWatchlists={props.watchlists}
               user={user}
               setOnHomePage={setOnHomePage}
+              setOnWatchlistPage={setOnWatchlistPage}
               setShowPopular={setShowPopular}
               isTabletOrMobile={isTabletOrMobile}
             />
