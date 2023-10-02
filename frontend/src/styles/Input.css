@@ -79,6 +79,10 @@
   position: relative;
 }
 
+.search__suggestions-image {
+  transition: opacity ease 300ms;
+}
+
 .search__suggestions::-webkit-scrollbar {
   width: 20px;
 }

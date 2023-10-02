@@ -7,9 +7,17 @@ import AddToWatchlist from "./AddToWatchlist";
 import { formatMoney } from "../../utilities/utilities";
 import { StyledBoxSimilarProviders } from "../Utility/StyledComponents/StyledComponentsMovieData";
 
-const MovieCard = ({ props, personPlaceholder, TMDBConfigData, TMDBImageBaseURL, isTabletOrMobile }) => {
+const MovieCard = ({
+  props,
+  movData,
+  movDataTMDB,
+  personPlaceholder,
+  TMDBConfigData,
+  TMDBImageBaseURL,
+  isTabletOrMobile,
+}) => {
   const renderNamesList = (list) => {
-    const namesArr = list.split(", ");
+    const namesArr = Array.isArray(list) ? list : list.split(", ");
     const renderedList = namesArr.map((el, i) => {
       return (
         <a
@@ -31,19 +39,27 @@ const MovieCard = ({ props, personPlaceholder, TMDBConfigData, TMDBImageBaseURL,
     <article className={`movie-card ${props.isLoadingMovieData ? "hidden" : "fade-in"}`}>
       <div className='movie-card__top'>
         <div className={`movie-card__poster`}>
-          <img src={props.movData?.Poster} alt='Movie poster' />
+          <img
+            src={
+              movData?.Poster ||
+              `${TMDBImageBaseURL + TMDBConfigData.images.poster_sizes[4] + movDataTMDB?.images?.posters[0].file_path}`
+            }
+            alt='Movie poster'
+          />
         </div>
 
         {/* //////// NAME, YEAR, LENGTH //////// */}
         <div className={`movie-data`}>
           <div className='movie-data__head'>
-            <h1 className='movie-data__head-name'>{props.movData?.Title}</h1>
+            <h1 className='movie-data__head-name'>{movData?.Title || movDataTMDB?.title}</h1>
             <div className='movie-data__head-info'>
-              <h2 className='movie-data__head-info-field'>{props.movData?.Year}</h2>
+              <h2 className='movie-data__head-info-field'>{movData?.Year || movDataTMDB?.release_date.slice(0, 4)}</h2>
               <div className='movie-data__head-info-separator' />
-              <h2 className='movie-data__head-info-field'>{props.movData?.Runtime}</h2>
+              <h2 className='movie-data__head-info-field'>{movData?.Runtime || `${movDataTMDB?.runtime} min`}</h2>
             </div>
-            <h3 className='movie-data__head-genres'>{props.movData?.Genre}</h3>
+            <h3 className='movie-data__head-genres'>
+              {movData?.Genre || movDataTMDB.genres.map((genre) => genre.name).join(", ")}
+            </h3>
           </div>
 
           <div className='movie-data__separator-hor'></div>
@@ -54,32 +70,41 @@ const MovieCard = ({ props, personPlaceholder, TMDBConfigData, TMDBImageBaseURL,
               <tbody>
                 <tr>
                   <td className='movie-data__names-category'>Director:</td>
-                  <td>{renderNamesList(props.movData?.Director)}</td>
+                  <td>
+                    {renderNamesList(
+                      movData?.Director ||
+                        movDataTMDB?.credits.crew.filter((p) => p.job === "Director").map((p) => p.name)
+                    )}
+                  </td>
                 </tr>
                 <tr>
                   <td className='movie-data__names-category'>Writer:</td>
-                  <td>{renderNamesList(props.movData?.Writer)}</td>
+                  <td>
+                    {renderNamesList(
+                      movData?.Writer || movDataTMDB?.credits.crew.filter((p) => p.job === "Writer").map((p) => p.name)
+                    )}
+                  </td>
                 </tr>
                 <tr>
                   <td className='movie-data__names-category'>Stars:</td>
-                  <td>{renderNamesList(props.movData?.Actors)}</td>
+                  <td>{renderNamesList(movData?.Actors || movDataTMDB?.credits.cast.map((p) => p.name))}</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
           {/* //////// PLOT //////// */}
-          <p className='movie-data__plot'>{props.movData?.Plot}</p>
+          <p className='movie-data__plot'>{movData?.Plot || movDataTMDB?.overview}</p>
 
           {/* //////// RATINGS //////// */}
-          {props.movData?.Ratings.length !== 0 ? (
+          {movData.Ratings && movData?.Ratings.length !== 0 && (
             <>
               <div className='movie-data__separator-hor'></div>
               <div className='movie-data__ratings'>
                 <table>
                   <tbody>
                     <tr>
-                      {props.movData?.Ratings.map((el, i) => {
+                      {movData?.Ratings.map((el, i) => {
                         return (
                           <td key={i}>
                             <h3 className='movie-data__ratings-website'>{el?.Source}</h3>
@@ -92,8 +117,6 @@ const MovieCard = ({ props, personPlaceholder, TMDBConfigData, TMDBImageBaseURL,
                 </table>
               </div>
             </>
-          ) : (
-            ""
           )}
 
           <div className='movie-data__separator-hor'></div>
@@ -106,17 +129,13 @@ const MovieCard = ({ props, personPlaceholder, TMDBConfigData, TMDBImageBaseURL,
                   <tr>
                     <td className='movie-data__money-category'>Budget:</td>
                     <td className='movie-data__money-number'>
-                      {props.movDataTMDB?.budget !== 0 || props.movDataTMDB?.budget
-                        ? formatMoney(props.movDataTMDB?.budget)
-                        : "N/A"}
+                      {movDataTMDB?.budget !== 0 || movDataTMDB?.budget ? formatMoney(movDataTMDB?.budget) : "N/A"}
                     </td>
                   </tr>
                   <tr>
                     <td className='movie-data__money-category'>Revenue:</td>
                     <td className='movie-data__money-number'>
-                      {props.movDataTMDB?.revenue !== 0 || props.movDataTMDB?.revenue
-                        ? formatMoney(props.movDataTMDB?.revenue)
-                        : "N/A"}
+                      {movDataTMDB?.revenue !== 0 || movDataTMDB?.revenue ? formatMoney(movDataTMDB?.revenue) : "N/A"}
                     </td>
                   </tr>
                 </tbody>
@@ -127,8 +146,8 @@ const MovieCard = ({ props, personPlaceholder, TMDBConfigData, TMDBImageBaseURL,
               <AddToWatchlist
                 user={props.user}
                 userWatchlists={props.watchlists}
-                titleDataTMDB={props.movDataTMDB}
-                titlePosterOMDB={props.movData?.Poster}
+                titleDataTMDB={movDataTMDB}
+                titlePosterOMDB={movData?.Poster}
               />
             )}
           </div>
@@ -139,14 +158,14 @@ const MovieCard = ({ props, personPlaceholder, TMDBConfigData, TMDBImageBaseURL,
         <h2 className='movie-card__bottom-section-name'>Cast</h2>
         <article
           className={`movie-cast ${
-            props.shadowCast && props.movDataTMDB?.credits.cast.length > 5
+            props.shadowCast && movDataTMDB?.credits.cast.length > 5
               ? "movie-cast--shadow-on"
               : "movie-cast--shadow-off"
           }`}
         >
           <div className='movie-cast__cells-row' onScroll={props.handleScroll}>
             <CastCells
-              list={props.movDataTMDB?.credits.cast}
+              list={movDataTMDB?.credits.cast}
               TMDBConfigData={TMDBConfigData}
               TMDBImageBaseURL={TMDBImageBaseURL}
               personPlaceholder={personPlaceholder}
@@ -157,14 +176,14 @@ const MovieCard = ({ props, personPlaceholder, TMDBConfigData, TMDBImageBaseURL,
         <h2 className='movie-card__bottom-section-name'>Full Crew</h2>
         <article
           className={`movie-crew ${
-            props.shadowCrew && props.movDataTMDB?.credits.crew.length > 8
+            props.shadowCrew && movDataTMDB?.credits.crew.length > 8
               ? "movie-crew--shadow-on"
               : "movie-crew--shadow-off"
           }`}
         >
           <div className='movie-crew__wrapper' onScroll={props.handleScroll}>
             <CrewCells
-              list={props.movDataTMDB?.credits.crew}
+              list={movDataTMDB?.credits.crew}
               TMDBConfigData={TMDBConfigData}
               TMDBImageBaseURL={TMDBImageBaseURL}
               personPlaceholder={personPlaceholder}
@@ -172,7 +191,7 @@ const MovieCard = ({ props, personPlaceholder, TMDBConfigData, TMDBImageBaseURL,
           </div>
         </article>
 
-        {props.movDataTMDB.images.posters.length === 0 && props.movDataTMDB.videos.results.length === 0 ? (
+        {movDataTMDB.images.posters.length === 0 && movDataTMDB.videos.results.length === 0 ? (
           ""
         ) : (
           <>
@@ -180,7 +199,7 @@ const MovieCard = ({ props, personPlaceholder, TMDBConfigData, TMDBImageBaseURL,
             <Media
               shadowVideos={props.shadowVideos}
               handleScroll={props.handleScroll}
-              movDataTMDB={props.movDataTMDB}
+              movDataTMDB={movDataTMDB}
               TMDBConfigData={TMDBConfigData}
             />
           </>
@@ -197,7 +216,7 @@ const MovieCard = ({ props, personPlaceholder, TMDBConfigData, TMDBImageBaseURL,
           {isTabletOrMobile && <h2 className='movie-card__bottom-section-name'>Similar Titles</h2>}
           <SimilarList
             props={props}
-            list={props.movDataTMDB?.recommendations?.results}
+            list={movDataTMDB?.recommendations?.results}
             TMDBConfigData={TMDBConfigData}
             TMDBImageBaseURL={TMDBImageBaseURL}
             personPlaceholder={personPlaceholder}

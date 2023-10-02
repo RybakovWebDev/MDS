@@ -94,18 +94,23 @@ function App() {
   };
 
   const getExternalIDs = async (resTMDBid) => {
-    const resExternalIds = await axios.get(
-      `https://api.themoviedb.org/3/movie/${resTMDBid}/external_ids?api_key=${tmdbAPI}`
-    );
-    if (resExternalIds.data.imdb_id) {
-      return resExternalIds.data;
+    try {
+      const resExternalIds = await axios.get(
+        `https://api.themoviedb.org/3/movie/${resTMDBid}/external_ids?api_key=${tmdbAPI}`
+      );
+      if (resExternalIds.data.imdb_id || resExternalIds.data.id) {
+        return resExternalIds.data;
+      }
+      console.log(resExternalIds);
+      return null;
+    } catch (err) {
+      console.error(err);
     }
-    return null;
   };
 
   const getOMDBData = async (titleIDs) => {
     try {
-      if (!titleIDs.imdb_id) throw new Error("No IMDB ID found");
+      if (!titleIDs.imdb_id) console.error("No IMDB ID found");
 
       const resOMDB = await axios.get(`https://www.omdbapi.com/?i=${titleIDs.imdb_id}&apikey=${omdbAPI}`);
 
@@ -148,7 +153,8 @@ function App() {
       setTMDBProviders(Object.keys(resTMDBDProviders.data.results).length === 0 ? false : resTMDBDProviders.data);
 
       const resOMDB = await getOMDBData(titleIDs);
-      if (resOMDB.data.Response === "False") throw new Error("No movies found");
+      if (resOMDB.data.Response === "False" && resTMDB.data.results.length === 0 && !resTMDBid)
+        throw new Error("No movies found");
       setMovDataOMDB(resOMDB?.data);
 
       setTimeout(() => {

@@ -78,7 +78,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
           const validExtensions = ["jpg", "jpeg", "png", "heic"];
           if (!validExtensions.includes(fileExtension)) {
             setErrorObject({
-              errorText: "Invalid file type! Only .jpg, .jpeg, .heic and .png are allowed.",
+              errorText: "Invalid file type! Only .jpg, .png and .heic are allowed.",
               errorCode: "415",
             });
 
@@ -178,7 +178,7 @@ const ProfileInfo = ({ user, personPlaceholder, isTabletOrMobile }) => {
           <Tooltip
             TransitionComponent={Fade}
             TransitionProps={{ timeout: 300 }}
-            title={<Typography sx={{ fontSize: "12px" }}>File size limit: 5MB. PNG/JPG</Typography>}
+            title={<Typography sx={{ fontSize: "12px" }}>File size limit: 5MB. JPG/PNG/HEIC</Typography>}
             open={tooltipOpen && edit}
             onOpen={() => setTooltipOpen(true)}
             onClose={() => !isTabletOrMobile && setTooltipOpen(false)}

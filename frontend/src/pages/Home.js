@@ -8,6 +8,8 @@ import { WhiteSpinner } from "../components/Utility/StyledComponents/StyledCompo
 
 const Home = ({
   props,
+  movData,
+  movDataTMDB,
   showMov,
   TMDBConfigData,
   TMDBImageBaseURL,
@@ -37,6 +39,8 @@ const Home = ({
       {props.showMov ? (
         <MovieCard
           props={props}
+          movData={movData}
+          movDataTMDB={movDataTMDB}
           TMDBConfigData={TMDBConfigData}
           TMDBImageBaseURL={TMDBImageBaseURL}
           personPlaceholder={personPlaceholder}

@@ -67,6 +67,7 @@ export const MainInput = ({ TMDBConfigData, searchTop, getMovieData, searchMov, 
               handleInputFocus={handleInputFocus}
               searchInput={searchInput}
               setSearchInput={setSearchInput}
+              isTabletOrMobile={isTabletOrMobile}
             />
           </article>
         </Fade>

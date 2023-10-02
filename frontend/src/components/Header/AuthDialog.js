@@ -141,7 +141,12 @@ const AuthDialog = ({ open, authDialogHandler, authSwitch, setAuthSwitch }) => {
         </FormGroup>
         <div className='auth-dialog__buttons'>
           {isLoading && <CircularProgress size={24} sx={{ marginRight: "1rem", color: "white" }} />}
-          <StyledButton id='authDialogCancelBtn' variant='outlined' onClick={authHandler} sx={{ marginRight: "1rem" }}>
+          <StyledButton
+            id='authDialogCancelBtn'
+            variant='outlined'
+            onClick={authHandler}
+            sx={{ marginRight: "1rem", width: "6rem" }}
+          >
             Cancel
           </StyledButton>
 
@@ -159,6 +164,7 @@ const AuthDialog = ({ open, authDialogHandler, authSwitch, setAuthSwitch }) => {
                 variant='outlined'
                 disabled={emptyFields}
                 onClick={authHandler}
+                sx={{ width: "6rem", "&.Mui-disabled": { color: "hsl(0, 0%, 50%)" } }}
               >
                 {authSwitch ? "Sign up" : "Login"}
               </StyledButton>

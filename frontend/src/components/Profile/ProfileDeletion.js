@@ -40,7 +40,7 @@ const ProfileDeletion = ({ user }) => {
         fontSize={"22px"}
         fontWeight={800}
         confirm={handleProfileDeletion}
-        delay={5000}
+        delayMS={5000}
       />
     </div>
   );

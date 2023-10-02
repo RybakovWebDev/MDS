@@ -68,10 +68,10 @@ export const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
 }));
 
 export const StyledAutocompleteSuggestionWrapperBox = styled(Box)(({ theme }) => ({
+  width: "100%",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  width: "100%",
 }));
 
 export const StyledAutocompleteSuggestionTitle = styled(Typography)(({ theme }) => ({

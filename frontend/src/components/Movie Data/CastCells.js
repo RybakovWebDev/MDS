@@ -1,3 +1,5 @@
+import { Divider } from "@mui/material";
+
 const CastCells = ({ list, TMDBConfigData, TMDBImageBaseURL, personPlaceholder }) => {
   const renderedCells = list.map((el, i) => {
     return (
@@ -22,6 +24,8 @@ const CastCells = ({ list, TMDBConfigData, TMDBImageBaseURL, personPlaceholder }
         >
           {el.name}
         </a>
+
+        <Divider sx={{ margin: "0.2rem 0.5rem", backgroundColor: "hsl(0, 0%, 30%)" }} />
 
         <h3 className='person-cell__character'>{el.character}</h3>
       </li>

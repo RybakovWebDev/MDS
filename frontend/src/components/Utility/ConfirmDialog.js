@@ -9,17 +9,25 @@ import { Divider } from "@mui/joy";
 import { StyledButton } from "./StyledComponents/StyledComponentsUtility";
 import { ErrorMessage } from "./Errors";
 
-const ConfirmDialog = ({ open, handleClose, title, text, fontSize, fontWeight, confirm, delay, errorObject }) => {
+const ConfirmDialog = ({ open, handleClose, title, text, fontSize, fontWeight, confirm, delayMS, errorObject }) => {
   const [confirmDisabled, setConfirmDisabled] = useState(false);
+  const [countdown, setCountdown] = useState(delayMS ? delayMS / 1000 : null);
 
   useEffect(() => {
-    if (delay) {
+    let countdownInterval;
+    if (delayMS) {
       setConfirmDisabled(true);
+      setCountdown(delayMS / 1000);
+      countdownInterval = setInterval(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
       setTimeout(() => {
         setConfirmDisabled(false);
-      }, delay);
+        clearInterval(countdownInterval);
+      }, delayMS);
     }
-  }, [delay]);
+    return () => clearInterval(countdownInterval);
+  }, [delayMS]);
 
   return (
     <Dialog
@@ -53,11 +61,18 @@ const ConfirmDialog = ({ open, handleClose, title, text, fontSize, fontWeight, c
       )}
 
       <DialogActions>
-        <StyledButton variant='outlined' onClick={handleClose}>
+        <StyledButton variant='outlined' onClick={handleClose} sx={{ width: "6rem" }}>
           Cancel
         </StyledButton>
-        <StyledButton id='dialogConfirmBtn' variant='outlined' disabled={confirmDisabled} onClick={confirm} autoFocus>
-          Confirm
+        <StyledButton
+          id='dialogConfirmBtn'
+          variant='outlined'
+          disabled={confirmDisabled}
+          onClick={confirm}
+          autoFocus
+          sx={{ width: "6rem", "&.Mui-disabled": { color: "#fff" } }}
+        >
+          {confirmDisabled && countdown ? `${countdown}` : "Confirm"}
         </StyledButton>
       </DialogActions>
     </Dialog>

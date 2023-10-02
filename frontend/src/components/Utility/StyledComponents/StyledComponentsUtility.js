@@ -5,6 +5,10 @@ export const WhiteSpinner = styled(CircularProgress)(() => ({
   color: "#fff",
 }));
 
+export const DarkSpinner = styled(CircularProgress)(() => ({
+  color: "#222222",
+}));
+
 export const WhiteAddIcon = styled(Add)(() => ({
   color: "#fff",
 }));

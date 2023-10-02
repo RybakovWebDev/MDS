@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { useDebouncedCallback } from "use-debounce";
+
 import { Box } from "@mui/material";
 import { SearchOutlined } from "@mui/icons-material";
 import {
@@ -11,33 +13,53 @@ import {
   StyledSearchButton,
   StyledSearchTextfield,
 } from "../Utility/StyledComponents/StyledComponentsInput";
-import { WhiteClearIcon } from "../Utility/StyledComponents/StyledComponentsUtility";
+import { DarkSpinner, WhiteClearIcon, WhiteSpinner } from "../Utility/StyledComponents/StyledComponentsUtility";
 
-const Search = ({ TMDBConfigData, getMovieData, searchMov, handleInputFocus, searchInput, setSearchInput }) => {
+const Search = ({
+  TMDBConfigData,
+  getMovieData,
+  searchMov,
+  handleInputFocus,
+  searchInput,
+  setSearchInput,
+  isTabletOrMobile,
+}) => {
   const [options, setOptions] = useState([]);
   const [openSearchResults, setOpenSearchResults] = useState(false);
+  const [loadingResults, setLoadingResults] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState({});
 
   const imageBaseURL = TMDBConfigData.images.secure_base_url;
+  let resultsTimeout;
 
   const handleOpen = () => {
     setOpenSearchResults(true);
   };
 
-  const handleClose = (event, reason) => {
+  const handleClose = (e, reason) => {
     if (reason !== "blur") {
       setOpenSearchResults(false);
     }
   };
 
-  const handleSearchInput = async (e) => {
-    const value = e.target.value;
-    setSearchInput(value);
+  const debouncedCallback = useDebouncedCallback(async (value) => {
     if (value === "") {
       setOptions([]);
+      setImagesLoaded({});
     } else {
+      clearTimeout(resultsTimeout);
+      resultsTimeout = setTimeout(() => setLoadingResults(true), 500);
       const searchResults = await searchMov(value);
+      clearTimeout(resultsTimeout);
       setOptions(searchResults.data.results.sort((a, b) => b.vote_count - a.vote_count));
+      setLoadingResults(false);
     }
+  }, 300);
+
+  const handleInputChange = (e) => {
+    const { value } = e.target;
+    setSearchInput(value);
+    debouncedCallback(value);
   };
 
   const handleSearchButtonClick = () => {
@@ -52,16 +74,18 @@ const Search = ({ TMDBConfigData, getMovieData, searchMov, handleInputFocus, sea
         open={openSearchResults}
         onOpen={handleOpen}
         onClose={handleClose}
-        ListboxProps={{ className: "search__suggestions" }}
-        freeSolo
         clearIcon={<WhiteClearIcon />}
+        ListboxProps={{ className: "search__suggestions", sx: { maxHeight: "45vh" } }}
+        freeSolo
         fullWidth
         options={options}
-        getOptionLabel={(option) => option.title}
+        getOptionLabel={(option) => (typeof option === "object" ? option.title : option)}
         onChange={(e, item) => {
-          if (item) {
+          if (item && typeof item === "object") {
             setSearchInput(item.title);
             getMovieData(item.title, item.id);
+          } else if (item && typeof item === "string") {
+            getMovieData(searchInput);
           }
         }}
         onInputChange={(e, item) => {
@@ -75,17 +99,24 @@ const Search = ({ TMDBConfigData, getMovieData, searchMov, handleInputFocus, sea
             <StyledAutocompleteSuggestionWrapperBox>
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 {option.poster_path ? (
-                  <img
-                    className='search__suggestions-image'
-                    src={`${imageBaseURL + TMDBConfigData.images.poster_sizes[0] + option.poster_path}`}
-                    alt='Title poster'
-                  />
+                  <Box sx={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    {!imagesLoaded[option.id] && <DarkSpinner sx={{ position: "absolute" }} />}
+                    <img
+                      className={`search__suggestions-image${!imagesLoaded[option.id] ? " transparent" : ""}`}
+                      src={`${imageBaseURL + TMDBConfigData.images.poster_sizes[0] + option.poster_path}`}
+                      alt='Title poster'
+                      height={`${isTabletOrMobile ? "60" : "138"}px`}
+                      width={TMDBConfigData.images.poster_sizes[0].slice(1, 3)}
+                      onLoad={() => setImagesLoaded((prev) => ({ ...prev, [option.id]: true }))}
+                    />
+                  </Box>
                 ) : (
                   <StyledAutocompleteSuggestionPlaceholder />
                 )}
 
                 <StyledAutocompleteSuggestionTitle>{option?.title}</StyledAutocompleteSuggestionTitle>
               </Box>
+
               <StyledAutocompleteSuggestionYear>
                 {option.release_date ? option.release_date.slice(0, 4) : "N/A"}
               </StyledAutocompleteSuggestionYear>
@@ -95,20 +126,20 @@ const Search = ({ TMDBConfigData, getMovieData, searchMov, handleInputFocus, sea
         renderInput={(params) => (
           <StyledSearchTextfield
             {...params}
-            placeholder='Start typing'
+            placeholder='Type movie name here'
             variant='filled'
             InputProps={{
               ...params.InputProps,
               type: "text",
             }}
-            onChange={handleSearchInput}
+            onChange={handleInputChange}
             onFocus={handleInputFocus}
             onBlur={handleInputFocus}
           />
         )}
       />
       <StyledSearchButton onClick={handleSearchButtonClick}>
-        <SearchOutlined sx={{ fontSize: "30px" }} />
+        {loadingResults ? <WhiteSpinner size={"30px"} /> : <SearchOutlined sx={{ fontSize: "30px" }} />}
       </StyledSearchButton>
     </>
   );

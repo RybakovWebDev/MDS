@@ -9,6 +9,8 @@ import personPlaceholder from "./images/person_cell_placeholder_image.png";
 
 const FinalView = (props) => {
   const {
+    movData,
+    movDataTMDB,
     TMDBConfig,
     user,
     logout,
@@ -48,6 +50,8 @@ const FinalView = (props) => {
             TMDBConfigData && (
               <Home
                 props={props}
+                movData={movData}
+                movDataTMDB={movDataTMDB}
                 showMov={showMov}
                 showPopular={showPopular}
                 setShowPopular={setShowPopular}

@@ -46,6 +46,11 @@ a:hover {
   transition: 300ms;
 }
 
+.transparent {
+  opacity: 0;
+  transition: opacity ease 300ms;
+}
+
 .fixed {
   position: fixed;
 }
