@@ -11,7 +11,7 @@ import { useWatchlistContext } from "../hooks/useWatchlistContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { getWatchlists } from "../services/CrudService";
 
-const Profile = ({ props, user, personPlaceholder, setOnHomePage, isTabletOrMobile }) => {
+const Profile = ({ user, watchlists, getMovieData, personPlaceholder, setOnHomePage, isTabletOrMobile }) => {
   const { dispatchWatchlists } = useWatchlistContext();
   const { dispatchUser } = useAuthContext();
   const navigate = useNavigate();
@@ -19,10 +19,10 @@ const Profile = ({ props, user, personPlaceholder, setOnHomePage, isTabletOrMobi
 
   useEffect(() => {
     setOnHomePage(false);
-    if (!props.user && !isLoading) {
+    if (!user && !isLoading) {
       navigate("/");
     }
-  }, [props.user, navigate, isLoading, setOnHomePage]);
+  }, [user, navigate, isLoading, setOnHomePage]);
 
   useEffect(() => {
     if (user) {
@@ -34,20 +34,20 @@ const Profile = ({ props, user, personPlaceholder, setOnHomePage, isTabletOrMobi
     <section className='profile'>
       {isLoading ? (
         <WhiteSpinner sx={{ marginTop: "20vh" }} />
-      ) : props.user ? (
+      ) : user ? (
         <>
           <ProfileInfo
-            isTabletOrMobile={isTabletOrMobile}
+            user={user}
+            userWatchlists={watchlists}
             personPlaceholder={personPlaceholder}
-            user={props.user}
-            userWatchlists={props.watchlists}
+            isTabletOrMobile={isTabletOrMobile}
           />
           <Divider sx={{ width: "65%", alignSelf: "center", bgcolor: "rgb(65, 65, 65)" }} />
 
           <Watchlists
-            props={props}
-            userWatchlists={props.watchlists}
-            user={props.user}
+            user={user}
+            userWatchlists={watchlists}
+            getMovieData={getMovieData}
             isTabletOrMobile={isTabletOrMobile}
           />
         </>

@@ -2,7 +2,15 @@ import { Link } from "react-router-dom";
 
 import { Typography } from "@mui/joy";
 
-const SimilarList = ({ props, list, TMDBConfigData, TMDBImageBaseURL, personPlaceholder }) => {
+const SimilarList = ({
+  getMovieData,
+  list,
+  TMDBConfigData,
+  TMDBImageBaseURL,
+  personPlaceholder,
+  handleScroll,
+  shadowSimilar,
+}) => {
   const renderedRecommendations = list
     .filter((i) => i.backdrop_path && i)
     .map((el) => {
@@ -12,7 +20,7 @@ const SimilarList = ({ props, list, TMDBConfigData, TMDBImageBaseURL, personPlac
             <div
               className='movie-similar__item'
               onClick={() => {
-                props.getMovieData(el.title, el.id);
+                getMovieData(el.title, el.id);
               }}
             >
               <img
@@ -40,10 +48,10 @@ const SimilarList = ({ props, list, TMDBConfigData, TMDBImageBaseURL, personPlac
   return (
     <article
       className={`movie-similar ${
-        props.shadowSimilar && list.length !== 0 ? "movie-similar--shadow-on" : "movie-similar--shadow-off"
+        shadowSimilar && list.length !== 0 ? "movie-similar--shadow-on" : "movie-similar--shadow-off"
       }`}
     >
-      <div className='movie-similar__wrapper' onScroll={props.handleScroll}>
+      <div className='movie-similar__wrapper' onScroll={handleScroll}>
         {!list || list.length === 0 ? (
           <Typography mt='47%' level='h4' color='white' textAlign={"center"}>
             No similar titles found

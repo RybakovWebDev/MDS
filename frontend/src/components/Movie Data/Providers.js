@@ -1,8 +1,8 @@
 import { Typography } from "@mui/joy";
 
-const Providers = ({ props, list, TMDBConfigData, TMDBImageBaseURL }) => {
+const Providers = ({ movData, movieProvider, handleProviderChange, providers, TMDBConfigData, TMDBImageBaseURL }) => {
   const regionName = new Intl.DisplayNames(["en"], { type: "region" });
-  const providerList = list.results ? Object.entries(list.results) : [];
+  const providerList = providers.results ? Object.entries(providers.results) : [];
 
   const renderChoices = providerList.map((el, i) => {
     return (
@@ -13,8 +13,8 @@ const Providers = ({ props, list, TMDBConfigData, TMDBImageBaseURL }) => {
   });
 
   const renderSelectedProvider = () => {
-    const selectedProvider = props.movieProvider
-      ? providerList.filter((el) => el[0] === props.movieProvider)
+    const selectedProvider = movieProvider
+      ? providerList.filter((el) => el[0] === movieProvider)
       : providerList.filter((el) => el[0] === navigator.languages[0].slice(-2));
 
     const providerData = selectedProvider.length !== 0 ? selectedProvider[0][1] : providerList[0][1];
@@ -27,7 +27,7 @@ const Providers = ({ props, list, TMDBConfigData, TMDBImageBaseURL }) => {
             providerData?.[category].map((el, i) => {
               return (
                 <a
-                  href={`https://www.google.com/search?q=${props.movData?.Title} ${props.movData?.Year} ${el.provider_name}`}
+                  href={`https://www.google.com/search?q=${movData?.Title} ${movData?.Year} ${el.provider_name}`}
                   key={i}
                   target='_blank'
                   rel='noopener noreferrer'
@@ -68,17 +68,17 @@ const Providers = ({ props, list, TMDBConfigData, TMDBImageBaseURL }) => {
   return (
     <article className='movie-providers'>
       <div className='movie-providers__wrapper'>
-        {list ? (
+        {providers ? (
           <>
             <div className='movie-providers__select-wrapper'>
               <label className='movie-providers__select-label' htmlFor='provider-select'>
                 Choose a country:
               </label>
               <select
-                value={props.movieProvider ? props.movieProvider : navigator.languages[0].slice(-2)}
+                value={movieProvider ? movieProvider : navigator.languages[0].slice(-2)}
                 name='providers'
                 id='provider-select'
-                onChange={props.handleProviderChange}
+                onChange={handleProviderChange}
               >
                 <option value=''>--Please select an option--</option>
                 {renderChoices}

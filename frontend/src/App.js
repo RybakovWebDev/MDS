@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
 import axios from "axios";
 
-import FinalView from "./FinalView";
+import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import Watchlist from "./pages/Watchlist";
+
 import { useAuthContext } from "./hooks/useAuthContext";
-import { useWatchlistContext } from "./hooks/useWatchlistContext";
-import { getWatchlists } from "./services/CrudService";
-import { handleScrollShadow } from "./utilities/utilities";
-import { useMediaQuery } from "react-responsive";
 import { useAuth } from "./hooks/useAuth";
+import { getWatchlists } from "./services/CrudService";
+import { useWatchlistContext } from "./hooks/useWatchlistContext";
+import { handleScrollShadow } from "./utilities/utilities";
+
+import personPlaceholder from "./images/person_cell_placeholder_image.png";
 
 const omdbAPI = process.env.REACT_APP_OMDB_API;
 const tmdbAPI = process.env.REACT_APP_TMDB_API;
@@ -178,41 +186,90 @@ function App() {
     if (user && !onWatchlistPage) {
       getWatchlists(user.token, user.id, dispatchWatchlists, dispatchUser);
     }
-  }, [user, dispatchWatchlists, dispatchUser]);
+  }, [user, onWatchlistPage, dispatchWatchlists, dispatchUser]);
 
   return (
-    <FinalView
-      onHomePage={onHomePage}
-      setOnHomePage={setOnHomePage}
-      setOnWatchlistPage={setOnWatchlistPage}
-      user={user}
-      logout={logout}
-      watchlists={watchlists}
-      inputMode={inputMode}
-      handleModeSwitch={handleModeSwitch}
-      showPopular={showPopular}
-      setShowPopular={setShowPopular}
-      popularTMDB={popularTMDB}
-      searchTop={searchTop}
-      showMov={showMov}
-      clearMovData={clearMovData}
-      searchMov={searchTMDB}
-      movData={movDataOMDB}
-      movDataTMDB={movDataTMDB}
-      TMDBProviders={TMDBProviders}
-      TMDBConfig={TMDBConfig}
-      getMovieData={getMovieData}
-      isLoadingMovieData={isLoadingMovieData}
-      handleScroll={(e) => handleScrollShadow(e, setShadowCast, setShadowCrew, setShadowSimilar, setShadowVideos)}
-      shadowCast={shadowCast}
-      shadowCrew={shadowCrew}
-      shadowSimilar={shadowSimilar}
-      shadowVideos={shadowVideos}
-      handleProviderChange={handleProviderChange}
-      movieProvider={movieProvider}
-      errMsg={errMsg}
-      isTabletOrMobile={isTabletOrMobile}
-    />
+    <div className='app'>
+      <Header
+        onHomePage={onHomePage}
+        searchTop={searchTop}
+        user={user}
+        logout={logout}
+        clearMovData={clearMovData}
+        inputMode={inputMode}
+        handleModeSwitch={handleModeSwitch}
+        isLoadingMovieData={isLoadingMovieData}
+        isTabletOrMobile={isTabletOrMobile}
+      />
+      <Routes>
+        <Route
+          path='/'
+          element={
+            TMDBConfig && (
+              <Home
+                user={user}
+                watchlists={watchlists}
+                movData={movDataOMDB}
+                movDataTMDB={movDataTMDB}
+                popularTMDB={popularTMDB}
+                TMDBProviders={TMDBProviders}
+                movieProvider={movieProvider}
+                handleProviderChange={handleProviderChange}
+                showMov={showMov}
+                showPopular={showPopular}
+                setShowPopular={setShowPopular}
+                inputMode={inputMode}
+                TMDBConfigData={TMDBConfig}
+                TMDBImageBaseURL={TMDBConfig.images?.secure_base_url}
+                personPlaceholder={personPlaceholder}
+                setOnHomePage={setOnHomePage}
+                searchTop={searchTop}
+                getMovieData={getMovieData}
+                searchMov={searchTMDB}
+                isLoadingMovieData={isLoadingMovieData}
+                errMsg={errMsg}
+                handleScroll={(e) =>
+                  handleScrollShadow(e, setShadowCast, setShadowCrew, setShadowSimilar, setShadowVideos)
+                }
+                shadowCast={shadowCast}
+                shadowCrew={shadowCrew}
+                shadowVideos={shadowVideos}
+                shadowSimilar={shadowSimilar}
+                isTabletOrMobile={isTabletOrMobile}
+              />
+            )
+          }
+        />
+        <Route
+          path='/profile'
+          element={
+            <Profile
+              user={user}
+              watchlists={watchlists}
+              getMovieData={getMovieData}
+              personPlaceholder={personPlaceholder}
+              setOnHomePage={setOnHomePage}
+              isTabletOrMobile={isTabletOrMobile}
+            />
+          }
+        />
+        <Route
+          path='/watchlist/:id'
+          element={
+            <Watchlist
+              userWatchlists={watchlists}
+              user={user}
+              getMovieData={getMovieData}
+              setOnHomePage={setOnHomePage}
+              setOnWatchlistPage={setOnWatchlistPage}
+              setShowPopular={setShowPopular}
+              isTabletOrMobile={isTabletOrMobile}
+            />
+          }
+        />
+      </Routes>
+      <Footer onHomePage={onHomePage} showMov={showMov} isLoadingMovieData={isLoadingMovieData} />
+    </div>
   );
 }
 

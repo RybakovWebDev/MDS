@@ -13,7 +13,7 @@ import { deleteWatchlist, patchWatchlist } from "../../services/CrudService";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import WatchlistTitlesList from "./WatchlistTitlesList";
 
-const WatchlistSingle = ({ props, user, watchlist, isTabletOrMobile }) => {
+const WatchlistSingle = ({ user, watchlist, getMovieData, isTabletOrMobile }) => {
   const { watchlists, dispatchWatchlists } = useWatchlistContext();
   const { dispatchUser } = useAuthContext();
   const currentWatchlist = watchlist ? watchlists.filter((w) => w._id === watchlist._id)[0] : null;
@@ -175,7 +175,7 @@ const WatchlistSingle = ({ props, user, watchlist, isTabletOrMobile }) => {
               isTabletOrMobile={isTabletOrMobile}
               listView={listView}
               editList={editList}
-              getMovieData={props.getMovieData}
+              getMovieData={getMovieData}
               handleWatchlistTitleRemove={handleWatchlistTitleRemove}
             />
           </div>

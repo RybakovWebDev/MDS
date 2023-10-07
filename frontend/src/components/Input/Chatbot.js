@@ -25,7 +25,6 @@ const Chatbot = () => {
       setMessages((prevMessages) => [...prevMessages, { sender: "user", text: inputValue }]);
       setInputValue("");
       const chatbotResponse = await postMessage(inputValue);
-      // const chatbotResponse = "Testing";
       setTimeout(() => {
         setMessages((prevMessages) => [
           ...prevMessages,

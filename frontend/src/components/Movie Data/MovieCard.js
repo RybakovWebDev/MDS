@@ -8,12 +8,23 @@ import { formatMoney } from "../../utilities/utilities";
 import { StyledBoxSimilarProviders } from "../Utility/StyledComponents/StyledComponentsMovieData";
 
 const MovieCard = ({
-  props,
+  user,
+  watchlists,
+  getMovieData,
   movData,
   movDataTMDB,
+  movieProvider,
+  handleProviderChange,
+  isLoadingMovieData,
   personPlaceholder,
   TMDBConfigData,
   TMDBImageBaseURL,
+  TMDBProviders,
+  handleScroll,
+  shadowCast,
+  shadowCrew,
+  shadowVideos,
+  shadowSimilar,
   isTabletOrMobile,
 }) => {
   const renderNamesList = (list) => {
@@ -36,7 +47,7 @@ const MovieCard = ({
   };
 
   return (
-    <article className={`movie-card ${props.isLoadingMovieData ? "hidden" : "fade-in"}`}>
+    <article className={`movie-card ${isLoadingMovieData ? "hidden" : "fade-in"}`}>
       <div className='movie-card__top'>
         <div className={`movie-card__poster`}>
           <img
@@ -142,10 +153,10 @@ const MovieCard = ({
               </table>
             </div>
 
-            {props.user && (
+            {user && (
               <AddToWatchlist
-                user={props.user}
-                userWatchlists={props.watchlists}
+                user={user}
+                userWatchlists={watchlists}
                 titleDataTMDB={movDataTMDB}
                 titlePosterOMDB={movData?.Poster}
               />
@@ -158,12 +169,10 @@ const MovieCard = ({
         <h2 className='movie-card__bottom-section-name'>Cast</h2>
         <article
           className={`movie-cast ${
-            props.shadowCast && movDataTMDB?.credits.cast.length > 5
-              ? "movie-cast--shadow-on"
-              : "movie-cast--shadow-off"
+            shadowCast && movDataTMDB?.credits.cast.length > 5 ? "movie-cast--shadow-on" : "movie-cast--shadow-off"
           }`}
         >
-          <div className='movie-cast__cells-row' onScroll={props.handleScroll}>
+          <div className='movie-cast__cells-row' onScroll={handleScroll}>
             <CastCells
               list={movDataTMDB?.credits.cast}
               TMDBConfigData={TMDBConfigData}
@@ -176,12 +185,10 @@ const MovieCard = ({
         <h2 className='movie-card__bottom-section-name'>Full Crew</h2>
         <article
           className={`movie-crew ${
-            props.shadowCrew && movDataTMDB?.credits.crew.length > 8
-              ? "movie-crew--shadow-on"
-              : "movie-crew--shadow-off"
+            shadowCrew && movDataTMDB?.credits.crew.length > 8 ? "movie-crew--shadow-on" : "movie-crew--shadow-off"
           }`}
         >
-          <div className='movie-crew__wrapper' onScroll={props.handleScroll}>
+          <div className='movie-crew__wrapper' onScroll={handleScroll}>
             <CrewCells
               list={movDataTMDB?.credits.crew}
               TMDBConfigData={TMDBConfigData}
@@ -197,8 +204,8 @@ const MovieCard = ({
           <>
             <h2 className='movie-card__bottom-section-name'>Related Media</h2>
             <Media
-              shadowVideos={props.shadowVideos}
-              handleScroll={props.handleScroll}
+              shadowVideos={shadowVideos}
+              handleScroll={handleScroll}
               movDataTMDB={movDataTMDB}
               TMDBConfigData={TMDBConfigData}
             />
@@ -215,16 +222,20 @@ const MovieCard = ({
         <StyledBoxSimilarProviders>
           {isTabletOrMobile && <h2 className='movie-card__bottom-section-name'>Similar Titles</h2>}
           <SimilarList
-            props={props}
+            getMovieData={getMovieData}
             list={movDataTMDB?.recommendations?.results}
             TMDBConfigData={TMDBConfigData}
             TMDBImageBaseURL={TMDBImageBaseURL}
             personPlaceholder={personPlaceholder}
+            handleScroll={handleScroll}
+            shadowSimilar={shadowSimilar}
           />
           {isTabletOrMobile && <h2 className='movie-card__bottom-section-name'>Streaming services</h2>}
           <Providers
-            props={props}
-            list={props.TMDBProviders}
+            movData={movData}
+            providers={TMDBProviders}
+            movieProvider={movieProvider}
+            handleProviderChange={handleProviderChange}
             TMDBConfigData={TMDBConfigData}
             TMDBImageBaseURL={TMDBImageBaseURL}
           />

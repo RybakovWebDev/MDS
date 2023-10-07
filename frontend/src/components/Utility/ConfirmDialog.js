@@ -61,10 +61,16 @@ const ConfirmDialog = ({ open, handleClose, title, text, fontSize, fontWeight, c
       )}
 
       <DialogActions>
-        <StyledButton variant='outlined' onClick={handleClose} sx={{ width: "6rem" }}>
+        <StyledButton
+          aria-label='Cancel and close dialog'
+          variant='outlined'
+          onClick={handleClose}
+          sx={{ width: "6rem" }}
+        >
           Cancel
         </StyledButton>
         <StyledButton
+          aria-label='Confirm and close dialog'
           id='dialogConfirmBtn'
           variant='outlined'
           disabled={confirmDisabled}

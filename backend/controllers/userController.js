@@ -123,8 +123,6 @@ const loginUser = [
   },
 ];
 
-// test@test.com
-
 const deleteUser = async (req, res, next) => {
   const { id } = req.params;
 

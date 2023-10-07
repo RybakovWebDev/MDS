@@ -34,7 +34,7 @@ import {
 } from "../Utility/StyledComponents/StyledComponentsWatchlist";
 import { WhiteSpinner } from "../Utility/StyledComponents/StyledComponentsUtility";
 
-const Watchlists = ({ props, userWatchlists, user, isTabletOrMobile }) => {
+const Watchlists = ({ userWatchlists, user, getMovieData, isTabletOrMobile }) => {
   const [expandedAccordions, setExpandedAccordions] = useState([]);
   const [editList, setEditList] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
@@ -267,7 +267,7 @@ const Watchlists = ({ props, userWatchlists, user, isTabletOrMobile }) => {
                 isTabletOrMobile={isTabletOrMobile}
                 listView={listView}
                 editList={editList === l._id}
-                getMovieData={props.getMovieData}
+                getMovieData={getMovieData}
                 handleWatchlistTitleRemove={handleWatchlistTitleRemove}
               />
             </ol>

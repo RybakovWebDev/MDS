@@ -7,10 +7,15 @@ import { ErrorMessage } from "../components/Utility/Errors";
 import { WhiteSpinner } from "../components/Utility/StyledComponents/StyledComponentsUtility";
 
 const Home = ({
-  props,
+  user,
+  watchlists,
   movData,
   movDataTMDB,
+  TMDBProviders,
+  movieProvider,
+  handleProviderChange,
   showMov,
+  popularTMDB,
   TMDBConfigData,
   TMDBImageBaseURL,
   personPlaceholder,
@@ -18,6 +23,16 @@ const Home = ({
   inputMode,
   showPopular,
   setShowPopular,
+  searchTop,
+  getMovieData,
+  searchMov,
+  isLoadingMovieData,
+  errMsg,
+  handleScroll,
+  shadowCast,
+  shadowCrew,
+  shadowVideos,
+  shadowSimilar,
   isTabletOrMobile,
 }) => {
   useEffect(() => {
@@ -30,34 +45,45 @@ const Home = ({
         personPlaceholder={personPlaceholder}
         TMDBConfigData={TMDBConfigData}
         inputMode={inputMode}
-        searchTop={props.searchTop}
-        getMovieData={props.getMovieData}
-        searchMov={props.searchMov}
+        searchTop={searchTop}
+        getMovieData={getMovieData}
+        searchMov={searchMov}
         isTabletOrMobile={isTabletOrMobile}
       />
 
-      {props.showMov ? (
+      {showMov ? (
         <MovieCard
-          props={props}
+          user={user}
+          watchlists={watchlists}
+          getMovieData={getMovieData}
           movData={movData}
           movDataTMDB={movDataTMDB}
+          TMDBProviders={TMDBProviders}
+          movieProvider={movieProvider}
+          handleProviderChange={handleProviderChange}
+          isLoadingMovieData={isLoadingMovieData}
           TMDBConfigData={TMDBConfigData}
           TMDBImageBaseURL={TMDBImageBaseURL}
           personPlaceholder={personPlaceholder}
+          handleScroll={handleScroll}
+          shadowCast={shadowCast}
+          shadowCrew={shadowCrew}
+          shadowVideos={shadowVideos}
+          shadowSimilar={shadowSimilar}
           isTabletOrMobile={isTabletOrMobile}
         />
       ) : (
-        props.isLoadingMovieData && <WhiteSpinner size={60} sx={{ mt: "10%" }} />
+        isLoadingMovieData && <WhiteSpinner size={60} sx={{ mt: "10%" }} />
       )}
 
-      {props.movData === "loadErr" && <ErrorMessage noNotification fontSize={"24px"} errorText={props.errMsg} />}
+      {movData === "loadErr" && <ErrorMessage noNotification fontSize={"24px"} errorText={errMsg} />}
 
       <div className='popular-slideshow'>
         <PopularSlideshow
           showMov={showMov}
           showPopular={showPopular}
           setShowPopular={setShowPopular}
-          posters={props.popularTMDB}
+          posters={popularTMDB}
           TMDBConfigData={TMDBConfigData}
           TMDBImageBaseURL={TMDBImageBaseURL}
           personPlaceholder={personPlaceholder}
