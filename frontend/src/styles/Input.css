@@ -70,6 +70,7 @@
   justify-content: center;
   flex-direction: row;
 }
+
 .home-input__search {
   position: fixed;
   bottom: 0;
@@ -77,6 +78,13 @@
 
 .home-input__search--up {
   position: relative;
+}
+
+.home-input__search form,
+.home-input__search--up form {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .search__suggestions-image {

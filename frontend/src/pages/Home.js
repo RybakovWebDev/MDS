@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { MainInput } from "../components/Input/MainInput";
+import HomeInput from "../components/Input/HomeInput";
 import MovieCard from "../components/Movie Data/MovieCard";
 import PopularSlideshow from "../components/Movie Data/PopularSlideshow";
 import { ErrorMessage } from "../components/Utility/Errors";
@@ -41,7 +41,7 @@ const Home = ({
 
   return (
     <section className={`home${!showMov && isTabletOrMobile ? " topMargin6rem" : ""}`}>
-      <MainInput
+      <HomeInput
         personPlaceholder={personPlaceholder}
         TMDBConfigData={TMDBConfigData}
         inputMode={inputMode}

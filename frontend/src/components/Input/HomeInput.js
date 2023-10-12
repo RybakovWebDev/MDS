@@ -5,7 +5,7 @@ import { Fade } from "@mui/material";
 import Chatbot from "./Chatbot";
 import Search from "./Search";
 
-export const MainInput = ({ TMDBConfigData, searchTop, getMovieData, searchMov, inputMode, isTabletOrMobile }) => {
+const HomeInput = ({ TMDBConfigData, searchTop, getMovieData, searchMov, inputMode, isTabletOrMobile }) => {
   const [animateParent, setAnimateParent] = useState(false);
   const [fadeAI, setFadeAI] = useState(false);
   const [fadeSearch, setFadeSearch] = useState(true);
@@ -75,3 +75,5 @@ export const MainInput = ({ TMDBConfigData, searchTop, getMovieData, searchMov, 
     </section>
   );
 };
+
+export default HomeInput;

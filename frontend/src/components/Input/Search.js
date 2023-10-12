@@ -69,7 +69,7 @@ const Search = ({
   };
 
   return (
-    <>
+    <form onSubmit={(e) => e.preventDefault()}>
       <StyledAutocomplete
         open={openSearchResults}
         onOpen={handleOpen}
@@ -141,7 +141,7 @@ const Search = ({
       <StyledSearchButton onClick={handleSearchButtonClick}>
         {loadingResults ? <WhiteSpinner size={"30px"} /> : <SearchOutlined sx={{ fontSize: "30px" }} />}
       </StyledSearchButton>
-    </>
+    </form>
   );
 };
 
