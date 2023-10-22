@@ -41,15 +41,19 @@ const Home = ({
 
   return (
     <section className={`home${!showMov && isTabletOrMobile ? " topMargin6rem" : ""}`}>
-      <HomeInput
-        personPlaceholder={personPlaceholder}
-        TMDBConfigData={TMDBConfigData}
-        inputMode={inputMode}
-        searchTop={searchTop}
-        getMovieData={getMovieData}
-        searchMov={searchMov}
-        isTabletOrMobile={isTabletOrMobile}
-      />
+      {TMDBConfigData === "loadErr" ? (
+        <ErrorMessage noNotification fontSize={"24px"} errorText={errMsg} />
+      ) : (
+        <HomeInput
+          personPlaceholder={personPlaceholder}
+          TMDBConfigData={TMDBConfigData}
+          inputMode={inputMode}
+          searchTop={searchTop}
+          getMovieData={getMovieData}
+          searchMov={searchMov}
+          isTabletOrMobile={isTabletOrMobile}
+        />
+      )}
 
       {showMov ? (
         <MovieCard
@@ -75,8 +79,6 @@ const Home = ({
       ) : (
         isLoadingMovieData && <WhiteSpinner size={60} sx={{ mt: "10%" }} />
       )}
-
-      {movData === "loadErr" && <ErrorMessage noNotification fontSize={"24px"} errorText={errMsg} />}
 
       <div className='popular-slideshow'>
         <PopularSlideshow

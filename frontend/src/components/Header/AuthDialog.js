@@ -91,7 +91,7 @@ const AuthDialog = ({ open, authDialogHandler, authSwitch, setAuthSwitch }) => {
     <StyledAuthDialog
       open={open}
       onClose={authDialogHandler}
-      aria-labelledby='alert-dialog-auth'
+      aria-labelledby='Authentication dialog'
       aria-describedby='alert-dialog-signup-signin'
       maxWidth='sm'
       fullWidth
@@ -142,6 +142,7 @@ const AuthDialog = ({ open, authDialogHandler, authSwitch, setAuthSwitch }) => {
         <div className='auth-dialog__buttons'>
           {isLoading && <CircularProgress size={24} sx={{ marginRight: "1rem", color: "white" }} />}
           <StyledButton
+            aria-label='Cancel'
             id='authDialogCancelBtn'
             variant='outlined'
             onClick={authHandler}
@@ -160,6 +161,7 @@ const AuthDialog = ({ open, authDialogHandler, authSwitch, setAuthSwitch }) => {
           >
             <div>
               <StyledButton
+                aria-label={authSwitch ? "Sign up" : "Login"}
                 id={authSwitch ? "authDialogSignUpBtn" : "authDialogLoginBtn"}
                 variant='outlined'
                 disabled={emptyFields}

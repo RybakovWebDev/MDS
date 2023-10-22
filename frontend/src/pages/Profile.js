@@ -14,8 +14,8 @@ import { getWatchlists } from "../services/CrudService";
 const Profile = ({ user, watchlists, getMovieData, personPlaceholder, setOnHomePage, isTabletOrMobile }) => {
   const { dispatchWatchlists } = useWatchlistContext();
   const { dispatchUser } = useAuthContext();
-  const navigate = useNavigate();
   const { isLoading } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setOnHomePage(false);
