@@ -80,17 +80,19 @@ const Home = ({
         isLoadingMovieData && <WhiteSpinner size={60} sx={{ mt: "10%" }} />
       )}
 
-      <div className='popular-slideshow'>
-        <PopularSlideshow
-          showMov={showMov}
-          showPopular={showPopular}
-          setShowPopular={setShowPopular}
-          posters={popularTMDB}
-          TMDBConfigData={TMDBConfigData}
-          TMDBImageBaseURL={TMDBImageBaseURL}
-          personPlaceholder={personPlaceholder}
-        />
-      </div>
+      {popularTMDB !== "loadErr" && (
+        <div className='popular-slideshow'>
+          <PopularSlideshow
+            showMov={showMov}
+            showPopular={showPopular}
+            setShowPopular={setShowPopular}
+            posters={popularTMDB}
+            TMDBConfigData={TMDBConfigData}
+            TMDBImageBaseURL={TMDBImageBaseURL}
+            personPlaceholder={personPlaceholder}
+          />
+        </div>
+      )}
     </section>
   );
 };

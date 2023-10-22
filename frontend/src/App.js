@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
-import axios from "axios";
 
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
@@ -14,10 +13,10 @@ import { useAuth } from "./hooks/useAuth";
 import { getWatchlists } from "./services/CrudService";
 import { useWatchlistContext } from "./hooks/useWatchlistContext";
 import { handleScrollShadow } from "./utilities/utilities";
-import { tmdbAPI } from "./utilities/constants";
 
 import personPlaceholder from "./images/person_cell_placeholder_image.png";
 import { useMovieData } from "./hooks/useMovieData";
+import { useInitialData } from "./hooks/useInitialData";
 
 function App() {
   const { user, dispatchUser } = useAuthContext();
@@ -25,12 +24,10 @@ function App() {
   const { watchlists, dispatchWatchlists } = useWatchlistContext();
   const [onHomePage, setOnHomePage] = useState(true);
   const [onWatchlistPage, setOnWatchlistPage] = useState(false);
-  const [popularTMDB, setPopularTMDB] = useState("");
   const [showPopular, setShowPopular] = useState(false);
   const [inputMode, setInputMode] = useState("search");
   const [searchTop, setSearchTop] = useState(false);
   const [showMov, setShowMov] = useState(false);
-  const [TMDBConfig, setTMDBConfig] = useState("");
   const [errMsg, setErrMsg] = useState("");
 
   const [shadowCast, setShadowCast] = useState("true");
@@ -46,6 +43,7 @@ function App() {
     setShowPopular,
     setErrMsg,
   });
+  const { TMDBConfig, popularTMDB } = useInitialData({ setErrMsg });
 
   const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1279px)" });
 
@@ -63,36 +61,6 @@ function App() {
     setSearchTop(false);
     setShowPopular(true);
   };
-
-  useEffect(() => {
-    const getTMDBConfig = async () => {
-      try {
-        const resTMDBConfig = await axios.get(`https://api.themoviedb.org/3/configuration?api_key=${tmdbAPI}`);
-        setTMDBConfig(resTMDBConfig.data);
-      } catch (err) {
-        console.error(err);
-        console.error(err?.response?.status);
-        setTMDBConfig("loadErr");
-        setErrMsg("Server error 😥 Please try again later.");
-      } finally {
-      }
-    };
-    getTMDBConfig();
-  }, []);
-
-  useEffect(() => {
-    const getPopularMovies = async () => {
-      try {
-        const resTMDBPopular = await axios.get(
-          `https://api.themoviedb.org/3/movie/popular?api_key=${tmdbAPI}&language=en-US&page=1`
-        );
-        setPopularTMDB(resTMDBPopular.data.results);
-      } catch (err) {
-        console.error("Error getting popular movies.", err);
-      }
-    };
-    getPopularMovies();
-  }, []);
 
   useEffect(() => {
     if (user && !onWatchlistPage) {

@@ -1,9 +1,9 @@
 # MDS
 
-#### My second personal project, a full-stack website for looking up movie-related information and media as well as creating custom user watchlists.
+### My second personal project, a full-stack website for looking up movie-related information and media as well as creating custom user watchlists.
 
 <p align="center">
-<img src="/frontend/src/images/App_Demo_Screenshot.jpg" width=50% height=50%>
+<img src="/frontend/src/images/App_Demo_Screenshot.jpg" width=75% height=75%>
 </p>
 
 Live website can be found here: **https://main.d3agl6wdyl1nit.amplifyapp.com/**
