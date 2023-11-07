@@ -1,17 +1,16 @@
 import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { Divider } from "@mui/material";
 
+import WatchlistTitlesList from "./WatchlistTitlesList";
 import WatchlistsControlsEdit from "./WatchlistsControlsEdit";
 import WatchlistsControlsView from "./WatchlistsControlsView";
 import { StyledWatchlistNameTextfield } from "../Utility/StyledComponents/StyledComponentsWatchlist";
 import { WhiteSpinner } from "../Utility/StyledComponents/StyledComponentsUtility";
 
 import { useWatchlistContext } from "../../hooks/useWatchlistContext";
-import { deleteWatchlist, patchWatchlist } from "../../services/CrudService";
+import { patchWatchlist } from "../../services/CrudService";
 import { useAuthContext } from "../../hooks/useAuthContext";
-import WatchlistTitlesList from "./WatchlistTitlesList";
 
 const WatchlistSingle = ({ user, watchlist, getMovieData, isTabletOrMobile }) => {
   const { watchlists, dispatchWatchlists } = useWatchlistContext();
@@ -19,7 +18,6 @@ const WatchlistSingle = ({ user, watchlist, getMovieData, isTabletOrMobile }) =>
   const currentWatchlist = watchlist ? watchlists.filter((w) => w._id === watchlist._id)[0] : null;
 
   const [editList, setEditList] = useState("");
-  const [openDialog, setOpenDialog] = useState(false);
   const [listName, setListName] = useState(currentWatchlist?.name);
   const [listCopy, setListCopy] = useState({});
   const [listView, setListView] = useState("large");
@@ -28,8 +26,7 @@ const WatchlistSingle = ({ user, watchlist, getMovieData, isTabletOrMobile }) =>
   const [errorPopperOpen, setErrorPopperOpen] = useState(false);
   const [popperFadeDuration, setPopperFadeDuration] = useState(350);
 
-  const navigate = useNavigate();
-  const confirmButtonRef = useRef();
+  const confirmBtnRef = useRef();
 
   const triggerErrorPopper = (target) => {
     setAnchorEl(target);
@@ -87,29 +84,7 @@ const WatchlistSingle = ({ user, watchlist, getMovieData, isTabletOrMobile }) =>
       } else {
         setErrorObject({ errorText: err.message, errorCode: "NETWORK_ERROR" });
       }
-      triggerErrorPopper(confirmButtonRef.current);
-    }
-  };
-
-  const handleDeleteDialog = (listID) => {
-    setOpenDialog(listID ? listID : false);
-    setTimeout(() => {
-      setErrorObject(null);
-    }, 300);
-  };
-
-  const handleDialogConfirm = async (listID) => {
-    try {
-      await deleteWatchlist(user.token, listID, dispatchWatchlists, dispatchUser);
-      navigate(`/profile`);
-      setOpenDialog(false);
-    } catch (err) {
-      console.error(err);
-      if (err.response) {
-        setErrorObject({ errorText: err.response.data.error, errorCode: err.response.status });
-      } else {
-        setErrorObject({ errorText: err.message, errorCode: "NETWORK_ERROR" });
-      }
+      triggerErrorPopper(confirmBtnRef.current);
     }
   };
 
@@ -138,22 +113,21 @@ const WatchlistSingle = ({ user, watchlist, getMovieData, isTabletOrMobile }) =>
           <div className='watchlist-single__controls-wrapper'>
             {user && user.id === currentWatchlist?.author && (
               <WatchlistsControlsEdit
+                user={user}
                 showControls={true}
                 editList={editList}
-                handleDeleteDialog={handleDeleteDialog}
-                handleDialogConfirm={handleDialogConfirm}
                 handleWatchlistOpen={false}
                 handleWatchlistEdit={handleWatchlistEdit}
                 handleWatchlistCancel={handleWatchlistCancel}
                 handleWatchlistSave={handleWatchlistSave}
                 listID={currentWatchlist._id}
-                openDialog={openDialog}
                 watchlistSingle={true}
-                confirmButtonRef={confirmButtonRef}
+                confirmBtnRef={confirmBtnRef}
                 anchorEl={anchorEl}
                 errorPopperOpen={errorPopperOpen}
                 closeErrorPopper={closeErrorPopper}
                 errorObject={errorObject}
+                setErrorObject={setErrorObject}
                 fadeDuration={popperFadeDuration}
                 color='black'
               />

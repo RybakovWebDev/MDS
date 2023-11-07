@@ -1,48 +1,65 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Check, Clear, DeleteForever, Edit, OpenInNew } from "@mui/icons-material";
 
 import ConfirmDialog from "../Utility/ConfirmDialog";
 import { StyledButton } from "../Utility/StyledComponents/StyledComponentsUtility";
-import { ErrorPopper } from "../Utility/Errors";
+import { deleteWatchlist } from "../../services/CrudService";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import { useWatchlistContext } from "../../hooks/useWatchlistContext";
 
 const WatchlistsControlsEdit = ({
+  user,
   showControls,
   expandedAccordions,
+  setExpandedAccordions,
   editList,
   listID,
-  handleDeleteDialog,
-  handleDialogConfirm,
-  openDialog,
   handleWatchlistOpen,
   handleWatchlistEdit,
   handleWatchlistCancel,
   handleWatchlistSave,
   watchlistSingle,
-  confirmButtonRef,
-  anchorEl,
-  errorPopperOpen,
-  closeErrorPopper,
+  confirmBtnRef,
   errorObject,
-  fadeDuration,
+  setErrorObject,
 }) => {
-  // const [showControls, setShowControls] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const { dispatchWatchlists } = useWatchlistContext();
+  const { dispatchUser } = useAuthContext();
 
-  // useEffect(() => {
-  //   if (expandedAccordions.includes(listID)) {
-  //     setTimeout(() => {
-  //       setShowControls(true);
-  //     }, 200);
-  //   } else {
-  //     setShowControls(false);
-  //   }
-  // }, [expandedAccordions, listID]);
+  const handleDeleteDialog = (listID) => {
+    setOpenDialog(listID ? listID : false);
+    setTimeout(() => {
+      setErrorObject(null);
+    }, 300);
+  };
+
+  const handleDeleteConfirm = async (listID) => {
+    try {
+      await deleteWatchlist(user.token, listID, dispatchWatchlists, dispatchUser);
+      if (expandedAccordions.includes(listID)) {
+        setTimeout(() => {
+          setExpandedAccordions(expandedAccordions.filter((a) => a !== listID));
+        }, 300);
+      }
+      setOpenDialog(false);
+    } catch (err) {
+      console.error(err);
+      if (err.response) {
+        setErrorObject({ errorText: err.response.data.error, errorCode: err.response.status });
+      } else {
+        setErrorObject({ errorText: err.message, errorCode: "NETWORK_ERROR" });
+      }
+    }
+  };
 
   return (
     showControls && (
       <div className={`${watchlistSingle ? "watchlist-single" : "watchlists"}__titles-controls-wrapper fade-in`}>
         {editList !== listID && (
           <StyledButton
+            aria-label='Delete watchlist'
             id='watchlistDeleteBtn'
             type='button'
             variant='outlined'
@@ -56,12 +73,13 @@ const WatchlistsControlsEdit = ({
           open={openDialog === listID}
           handleClose={() => handleDeleteDialog()}
           title={"Delete this list?"}
-          confirm={() => handleDialogConfirm(listID)}
+          confirm={() => handleDeleteConfirm(listID)}
           errorObject={errorObject}
         />
         {editList === listID ? (
           <>
             <StyledButton
+              aria-label='Cancel watchlist changes'
               id='watchlistCancelBtn'
               type='button'
               variant='outlined'
@@ -71,8 +89,9 @@ const WatchlistsControlsEdit = ({
               <Clear />
             </StyledButton>
             <StyledButton
+              aria-label='Confirm watchlist changes'
               id='watchlistSaveBtn'
-              ref={confirmButtonRef}
+              ref={confirmBtnRef}
               type='button'
               variant='outlined'
               sx={{ m: "1rem 1rem 1rem 0" }}
@@ -83,6 +102,7 @@ const WatchlistsControlsEdit = ({
           </>
         ) : (
           <StyledButton
+            aria-label='Edit watchlist'
             id='watchlistEditBtn'
             type='button'
             variant='outlined'
@@ -94,6 +114,7 @@ const WatchlistsControlsEdit = ({
         )}
         {handleWatchlistOpen && (
           <StyledButton
+            aria-label='View watchlist on separate page'
             id='watchlistOpenBtn'
             type='button'
             variant='outlined'
@@ -103,15 +124,6 @@ const WatchlistsControlsEdit = ({
             <OpenInNew />
           </StyledButton>
         )}
-        <ErrorPopper
-          anchorEl={anchorEl}
-          open={errorPopperOpen}
-          onClose={closeErrorPopper}
-          errorText={errorObject?.errorText}
-          errorCode={errorObject?.errorCode}
-          color='black'
-          fadeDuration={fadeDuration}
-        />
       </div>
     )
   );

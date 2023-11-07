@@ -188,14 +188,15 @@ const MovieCard = ({
             shadowCrew && movDataTMDB?.credits.crew.length > 8 ? "movie-crew--shadow-on" : "movie-crew--shadow-off"
           }`}
         >
-          <div className='movie-crew__wrapper' onScroll={handleScroll}>
+
             <CrewCells
               list={movDataTMDB?.credits.crew}
               TMDBConfigData={TMDBConfigData}
               TMDBImageBaseURL={TMDBImageBaseURL}
               personPlaceholder={personPlaceholder}
+              handleScroll={handleScroll}
             />
-          </div>
+
         </article>
 
         {movDataTMDB.images.posters.length === 0 && movDataTMDB.videos.results.length === 0 ? (

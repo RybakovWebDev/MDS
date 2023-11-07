@@ -1,4 +1,4 @@
-import { useEffect, createContext, useReducer } from "react";
+import { useEffect, createContext, useReducer, useMemo } from "react";
 import axios from "axios";
 import { getUser } from "../services/CrudService";
 
@@ -65,5 +65,7 @@ export const AuthContextProvider = ({ children }) => {
     }
   }, []);
 
-  return <AuthContext.Provider value={{ ...state, dispatchUser }}>{children}</AuthContext.Provider>;
+  const value = useMemo(() => ({ ...state, dispatchUser }), [state, dispatchUser]);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

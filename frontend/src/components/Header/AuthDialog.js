@@ -92,7 +92,7 @@ const AuthDialog = ({ open, authDialogHandler, authSwitch, setAuthSwitch }) => {
       open={open}
       onClose={authDialogHandler}
       aria-labelledby='Authentication dialog'
-      aria-describedby='alert-dialog-signup-signin'
+      aria-describedby={`alert-dialog-${authSwitch ? "signup" : "login"}`}
       maxWidth='sm'
       fullWidth
     >
@@ -159,18 +159,16 @@ const AuthDialog = ({ open, authDialogHandler, authSwitch, setAuthSwitch }) => {
             TransitionProps={{ timeout: 600 }}
             title='Fill out the required fields'
           >
-            <div>
-              <StyledButton
-                aria-label={authSwitch ? "Sign up" : "Login"}
-                id={authSwitch ? "authDialogSignUpBtn" : "authDialogLoginBtn"}
-                variant='outlined'
-                disabled={emptyFields}
-                onClick={authHandler}
-                sx={{ width: "6rem", "&.Mui-disabled": { color: "hsl(0, 0%, 50%)" } }}
-              >
-                {authSwitch ? "Sign up" : "Login"}
-              </StyledButton>
-            </div>
+            <StyledButton
+              aria-label={authSwitch ? "Sign up" : "Login"}
+              id={authSwitch ? "authDialogSignUpBtn" : "authDialogLoginBtn"}
+              variant='outlined'
+              disabled={emptyFields}
+              onClick={authHandler}
+              sx={{ width: "6rem", "&.Mui-disabled": { color: "hsl(0, 0%, 50%)" } }}
+            >
+              {authSwitch ? "Sign up" : "Login"}
+            </StyledButton>
           </Tooltip>
         </div>
       </StyledAuthDialogActions>

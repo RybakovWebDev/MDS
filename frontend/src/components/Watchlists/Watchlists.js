@@ -20,7 +20,7 @@ import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifi
 import WatchlistsControlsAdd from "./WatchlistsControlsAdd";
 import WatchlistsControlsEdit from "./WatchlistsControlsEdit";
 import SortableAccordionItem from "./SortableAccordionItem";
-import { deleteWatchlist, patchWatchlist, postWatchlist, updateUser } from "../../services/CrudService";
+import { patchWatchlist, updateUser } from "../../services/CrudService";
 
 import WatchlistsControlsView from "./WatchlistsControlsView";
 import WatchlistTitlesList from "./WatchlistTitlesList";
@@ -33,11 +33,12 @@ import {
   StyledWatchlistNameTextfield,
 } from "../Utility/StyledComponents/StyledComponentsWatchlist";
 import { WhiteSpinner } from "../Utility/StyledComponents/StyledComponentsUtility";
+import { ErrorPopper } from "../Utility/Errors";
 
 const Watchlists = ({ userWatchlists, user, getMovieData, isTabletOrMobile }) => {
   const [expandedAccordions, setExpandedAccordions] = useState([]);
   const [editList, setEditList] = useState("");
-  const [openDialog, setOpenDialog] = useState(false);
+
   const [listName, setListName] = useState("");
   const [listCopy, setListCopy] = useState({});
   const [listView, setListView] = useState("large");
@@ -49,7 +50,17 @@ const Watchlists = ({ userWatchlists, user, getMovieData, isTabletOrMobile }) =>
   const { isLoading, dispatchWatchlists } = useWatchlistContext();
   const { dispatchUser } = useAuthContext();
   const navigate = useNavigate();
-  const confirmButtonRef = useRef();
+  const confirmBtnRef = useRef();
+
+  console.log("Watchlists rendered");
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const triggerErrorPopper = (target) => {
     setAnchorEl(target);
@@ -63,14 +74,6 @@ const Watchlists = ({ userWatchlists, user, getMovieData, isTabletOrMobile }) =>
       setErrorObject(null);
     }, 300);
   };
-
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(TouchSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
 
   const findListById = (listID) => {
     return userWatchlists.find((l) => l._id === listID);
@@ -94,32 +97,6 @@ const Watchlists = ({ userWatchlists, user, getMovieData, isTabletOrMobile }) =>
     const id = e.currentTarget.id;
     if (id === "listViewLargeBtn") setListView("large");
     if (id === "listViewSmallBtn") setListView("small");
-  };
-
-  const handleDeleteDialog = (listID) => {
-    setOpenDialog(listID ? listID : false);
-    setTimeout(() => {
-      setErrorObject(null);
-    }, 300);
-  };
-
-  const handleDialogConfirm = async (listID) => {
-    try {
-      await deleteWatchlist(user.token, listID, dispatchWatchlists, dispatchUser);
-      if (expandedAccordions.includes(listID)) {
-        setTimeout(() => {
-          setExpandedAccordions(expandedAccordions.filter((a) => a !== listID));
-        }, 300);
-      }
-      setOpenDialog(false);
-    } catch (err) {
-      console.error(err);
-      if (err.response) {
-        setErrorObject({ errorText: err.response.data.error, errorCode: err.response.status });
-      } else {
-        setErrorObject({ errorText: err.message, errorCode: "NETWORK_ERROR" });
-      }
-    }
   };
 
   const handleWatchlistOpen = (listID) => {
@@ -171,21 +148,7 @@ const Watchlists = ({ userWatchlists, user, getMovieData, isTabletOrMobile }) =>
       } else {
         setErrorObject({ errorText: err.message, errorCode: "NETWORK_ERROR" });
       }
-      triggerErrorPopper(confirmButtonRef.current);
-    }
-  };
-
-  const handleWatchlistNew = () => {
-    try {
-      postWatchlist(user.token, user.id, dispatchWatchlists, dispatchUser);
-    } catch (err) {
-      console.error(err);
-      if (err.response) {
-        setErrorObject({ errorText: err.response.data.error, errorCode: err.response.status });
-      } else {
-        setErrorObject({ errorText: err.message, errorCode: "NETWORK_ERROR" });
-      }
-      triggerErrorPopper(confirmButtonRef.current);
+      triggerErrorPopper(confirmBtnRef.current);
     }
   };
 
@@ -212,7 +175,7 @@ const Watchlists = ({ userWatchlists, user, getMovieData, isTabletOrMobile }) =>
         } else {
           setErrorObject({ errorText: err.message, errorCode: "NETWORK_ERROR" });
         }
-        triggerErrorPopper(confirmButtonRef.current);
+        triggerErrorPopper(confirmBtnRef.current);
       }
     }
   };
@@ -273,22 +236,22 @@ const Watchlists = ({ userWatchlists, user, getMovieData, isTabletOrMobile }) =>
             </ol>
           )}
           <WatchlistsControlsEdit
+            user={user}
             expandedAccordions={expandedAccordions}
+            setExpandedAccordions={setExpandedAccordions}
             editList={editList}
             showControls={expandedAccordions.includes(l._id)}
-            handleDeleteDialog={handleDeleteDialog}
-            handleDialogConfirm={handleDialogConfirm}
             handleWatchlistOpen={handleWatchlistOpen}
             handleWatchlistEdit={handleWatchlistEdit}
             handleWatchlistCancel={handleWatchlistCancel}
             handleWatchlistSave={handleWatchlistSave}
             listID={l._id}
-            confirmButtonRef={confirmButtonRef}
-            openDialog={openDialog}
+            confirmBtnRef={confirmBtnRef}
             anchorEl={anchorEl}
             errorPopperOpen={errorPopperOpen}
             closeErrorPopper={closeErrorPopper}
             errorObject={errorObject}
+            setErrorObject={setErrorObject}
             fadeDuration={popperFadeDuration}
             color='black'
           />
@@ -354,7 +317,21 @@ const Watchlists = ({ userWatchlists, user, getMovieData, isTabletOrMobile }) =>
             Your lists will appear here.
           </Typography>
         )}
-        <WatchlistsControlsAdd handleWatchlistNew={handleWatchlistNew} />
+        <WatchlistsControlsAdd
+          user={user}
+          setErrorObject={setErrorObject}
+          triggerErrorPopper={triggerErrorPopper}
+          errorPopperOpen={errorPopperOpen}
+        />
+        <ErrorPopper
+          anchorEl={anchorEl}
+          open={errorPopperOpen}
+          onClose={closeErrorPopper}
+          errorText={errorObject?.errorText}
+          errorCode={errorObject?.errorCode}
+          color='black'
+          // fadeDuration={fadeDuration}
+        />
       </article>
     </Fade>
   );

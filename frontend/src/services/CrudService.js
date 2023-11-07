@@ -90,6 +90,7 @@ export const postWatchlist = async (userToken, userID, dispatchWatchlists, dispa
     return response.data;
   } catch (err) {
     console.error("Can't create new list: ", err);
+    err.response.status === 401 && dispatchUser({ type: "LOGOUT_USER" });
     throw err;
   }
 };

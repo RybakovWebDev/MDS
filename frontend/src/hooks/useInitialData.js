@@ -38,6 +38,7 @@ export const useInitialData = ({ setErrMsg }) => {
     };
     getPopularMovies();
   }, []);
+
   return {
     TMDBConfig,
     popularTMDB,

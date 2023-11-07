@@ -1,4 +1,4 @@
-const CrewCells = ({ list, TMDBConfigData, TMDBImageBaseURL, personPlaceholder }) => {
+const CrewCells = ({ list, TMDBConfigData, TMDBImageBaseURL, personPlaceholder, handleScroll }) => {
   const key = "name";
   const removedDuplicates = [...new Map(list.map((item) => [item[key], item])).values()];
 
@@ -32,7 +32,11 @@ const CrewCells = ({ list, TMDBConfigData, TMDBImageBaseURL, personPlaceholder }
       </li>
     );
   });
-  return <ul className='movie-crew__list'>{renderedCells}</ul>;
+  return (
+    <div className='movie-crew__wrapper' onScroll={handleScroll}>
+      <ul className='movie-crew__list'>{renderedCells}</ul>
+    </div>
+  );
 };
 
 export default CrewCells;

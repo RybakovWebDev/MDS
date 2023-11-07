@@ -12,12 +12,12 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { Clear } from "@mui/icons-material";
 
 import SortableTitleItem from "./SortableTitleItem";
 import WatchlistTitleContent from "./WatchlistTitleContent";
 import { StyledWatchlistTitleRemoveButton } from "../Utility/StyledComponents/StyledComponentsWatchlist";
-import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { useWatchlistContext } from "../../hooks/useWatchlistContext";
 
 const WatchlistTitlesList = ({
