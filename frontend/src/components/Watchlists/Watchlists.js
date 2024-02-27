@@ -52,7 +52,7 @@ const Watchlists = ({ userWatchlists, user, getMovieData, isTabletOrMobile }) =>
   const navigate = useNavigate();
   const confirmBtnRef = useRef();
 
-  console.log("Watchlists rendered");
+  // console.log("Watchlists rendered");
 
   const sensors = useSensors(
     useSensor(PointerSensor),
