@@ -9,7 +9,6 @@ export const useInitialData = ({ setErrMsg }) => {
 
   useEffect(() => {
     const getTMDBConfig = async () => {
-      console.log("getting config");
       try {
         const resTMDBConfig = await axios.get(`https://api.themoviedb.org/3/configuration?api_key=${tmdbAPI}`);
         setTMDBConfig(resTMDBConfig.data);

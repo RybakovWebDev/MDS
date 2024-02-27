@@ -72,3 +72,7 @@ a:hover {
 .link-no-hover-cells:hover {
   opacity: 1;
 }
+
+.blurred {
+  filter: blur(3px);
+}

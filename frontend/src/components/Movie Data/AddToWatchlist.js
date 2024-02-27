@@ -1,6 +1,6 @@
+import React, { useState } from "react";
 import { Add, CheckCircle, CircleOutlined, Clear } from "@mui/icons-material";
 import { Button, List, ListItem, ListItemButton } from "@mui/joy";
-import React, { useState } from "react";
 import { DialogContent, DialogTitle, ListItemText, Typography } from "@mui/material";
 
 import { useWatchlistContext } from "../../hooks/useWatchlistContext";

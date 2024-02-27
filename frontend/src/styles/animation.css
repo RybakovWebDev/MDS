@@ -9,10 +9,10 @@
 
 @keyframes slideShowScroll {
   0% {
-    transform: translate(-52.5rem);
+    transform: translate(0%);
   }
   100% {
-    transform: translate(-852.5rem);
+    transform: translate(-534.1%);
   }
 }
 

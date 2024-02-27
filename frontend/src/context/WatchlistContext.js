@@ -2,35 +2,42 @@ import { createContext, useMemo, useReducer } from "react";
 
 export const WatchlistContext = createContext();
 
-export const watchlistsReducer = (state, action) => {
+const watchlistsReducer = (state, action) => {
   switch (action.type) {
-    case "SET_WATCHLISTS":
+    case "SET_WATCHLISTS": {
       return {
         watchlists: action.payload,
       };
-    case "POST_WATCHLIST":
+    }
+    case "POST_WATCHLIST": {
       return {
         watchlists: action.payload,
       };
-    case "CREATE_WATCHLIST":
+    }
+    case "CREATE_WATCHLIST": {
       return {
         watchlists: [...state.watchlists, action.payload],
       };
-    case "DELETE_WATCHLIST":
+    }
+    case "DELETE_WATCHLIST": {
       return {
         watchlists: state.watchlists.filter((i) => i._id !== action.payload._id),
       };
-    case "PATCH_WATCHLIST":
+    }
+    case "PATCH_WATCHLIST": {
       return {
         watchlists: state.watchlists.map((item) => (item._id === action.payload._id ? action.payload : item)),
       };
-    case "SET_LOADING":
+    }
+    case "SET_LOADING": {
       return {
         ...state,
         isLoading: action.payload,
       };
-    default:
+    }
+    default: {
       return state;
+    }
   }
 };
 

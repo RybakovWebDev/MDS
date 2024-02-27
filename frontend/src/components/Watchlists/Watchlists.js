@@ -224,16 +224,14 @@ const Watchlists = ({ userWatchlists, user, getMovieData, isTabletOrMobile }) =>
           {l.titles.length === 0 ? (
             <Typography sx={{ color: "white" }}>No titles yet </Typography>
           ) : (
-            <ol className='watchlist-accordion__titles'>
-              <WatchlistTitlesList
-                currentWatchlist={l}
-                isTabletOrMobile={isTabletOrMobile}
-                listView={listView}
-                editList={editList === l._id}
-                getMovieData={getMovieData}
-                handleWatchlistTitleRemove={handleWatchlistTitleRemove}
-              />
-            </ol>
+            <WatchlistTitlesList
+              currentWatchlist={l}
+              isTabletOrMobile={isTabletOrMobile}
+              listView={listView}
+              editList={editList === l._id}
+              getMovieData={getMovieData}
+              handleWatchlistTitleRemove={handleWatchlistTitleRemove}
+            />
           )}
           <WatchlistsControlsEdit
             user={user}
@@ -307,7 +305,12 @@ const Watchlists = ({ userWatchlists, user, getMovieData, isTabletOrMobile }) =>
           <Typography sx={{ fontSize: "30px", fontWeight: "600", color: "#fff", fontFamily: "Inter" }}>
             Watchlists
           </Typography>
-          <WatchlistsControlsView listViewHandler={listViewHandler} listView={listView} cellsView={false} />
+          <WatchlistsControlsView
+            visible={expandedAccordions.length !== 0}
+            listViewHandler={listViewHandler}
+            listView={listView}
+            cellsView={false}
+          />
         </div>
 
         {userWatchlists && userWatchlists.length !== 0 ? (

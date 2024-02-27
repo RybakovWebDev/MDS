@@ -1,4 +1,4 @@
-import { createRef } from "react";
+import { createRef, useState } from "react";
 
 import { Link } from "react-router-dom";
 import {
@@ -28,6 +28,7 @@ const WatchlistTitlesList = ({
   currentWatchlist,
   getMovieData,
 }) => {
+  const [isDragged, setisDragged] = useState("");
   const { dispatchWatchlists } = useWatchlistContext();
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -36,6 +37,10 @@ const WatchlistTitlesList = ({
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  const handleTitleDndStart = (e) => {
+    setisDragged(e.active.id);
+  };
 
   const handletTitleDndEnd = (e) => {
     const { active, over } = e;
@@ -54,65 +59,70 @@ const WatchlistTitlesList = ({
 
       dispatchWatchlists({ type: "PATCH_WATCHLIST", payload: currentWatchlist });
     }
+    setisDragged("");
   };
 
   return (
-    <DndContext
-      sensors={sensors}
-      onDragEnd={handletTitleDndEnd}
-      modifiers={[restrictToVerticalAxis, restrictToParentElement]}
-      measuring={{
-        droppable: {
-          strategy: MeasuringStrategy.Always,
-        },
-      }}
-    >
-      <SortableContext items={currentWatchlist.titles.map((t) => t.imdbID)} strategy={verticalListSortingStrategy}>
-        <TransitionGroup component={null}>
-          {currentWatchlist.titles.map((el) => {
-            const nodeRef = createRef();
-            return (
-              <CSSTransition key={el.imdbID} timeout={300} classNames='item' nodeRef={nodeRef}>
-                <SortableTitleItem
-                  key={el.imdbID}
-                  id={el.imdbID}
-                  listID={currentWatchlist._id}
-                  editList={editList}
-                  nodeRef={nodeRef}
-                  isTabletOrMobile={isTabletOrMobile}
-                  listViewCells={listView === "cells"}
-                >
-                  <div className='watchlist-accordion__entry'>
-                    <Link
-                      to='/'
-                      className={`${editList ? "link-no-hover" : ""}${
-                        listView === "cells" && !editList ? "link-no-hover-cells" : ""
-                      }`}
-                      onClick={(e) => {
-                        editList && e.preventDefault();
-                      }}
-                    >
-                      <WatchlistTitleContent getMovieData={getMovieData} el={el} listView={listView} />
-                    </Link>
-
-                    {editList && (
-                      <StyledWatchlistTitleRemoveButton
-                        className='fade-in'
-                        id='watchlistTitleRemoveBtn'
-                        onClick={() => handleWatchlistTitleRemove(currentWatchlist._id, el.imdbID)}
-                        sx={{ margin: `${isTabletOrMobile ? "0 0.5rem 0 0.5rem" : "0"}` }}
+    <ol className='watchlist-accordion__titles'>
+      <DndContext
+        sensors={sensors}
+        onDragStart={handleTitleDndStart}
+        onDragEnd={handletTitleDndEnd}
+        modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+        measuring={{
+          droppable: {
+            strategy: MeasuringStrategy.Always,
+          },
+        }}
+      >
+        <SortableContext items={currentWatchlist.titles.map((t) => t.imdbID)} strategy={verticalListSortingStrategy}>
+          <TransitionGroup component={null}>
+            {currentWatchlist.titles.map((el) => {
+              const nodeRef = createRef();
+              return (
+                <CSSTransition key={el.imdbID} timeout={300} classNames='item' nodeRef={nodeRef}>
+                  <SortableTitleItem
+                    key={el.imdbID}
+                    id={el.imdbID}
+                    listID={currentWatchlist._id}
+                    editList={editList}
+                    nodeRef={nodeRef}
+                    isTabletOrMobile={isTabletOrMobile}
+                    listViewCells={listView === "cells"}
+                    isDragged={isDragged === el.imdbID}
+                  >
+                    <div className='watchlist-accordion__entry'>
+                      <Link
+                        to='/'
+                        className={`${editList ? "link-no-hover" : ""}${
+                          listView === "cells" && !editList ? "link-no-hover-cells" : ""
+                        }`}
+                        onClick={(e) => {
+                          editList && e.preventDefault();
+                        }}
                       >
-                        <Clear />
-                      </StyledWatchlistTitleRemoveButton>
-                    )}
-                  </div>
-                </SortableTitleItem>
-              </CSSTransition>
-            );
-          })}
-        </TransitionGroup>
-      </SortableContext>
-    </DndContext>
+                        <WatchlistTitleContent getMovieData={getMovieData} el={el} listView={listView} />
+                      </Link>
+
+                      {editList && (
+                        <StyledWatchlistTitleRemoveButton
+                          className='fade-in'
+                          id='watchlistTitleRemoveBtn'
+                          onClick={() => handleWatchlistTitleRemove(currentWatchlist._id, el.imdbID)}
+                          sx={{ margin: `${isTabletOrMobile ? "0 0.5rem 0 0.5rem" : "0"}` }}
+                        >
+                          <Clear />
+                        </StyledWatchlistTitleRemoveButton>
+                      )}
+                    </div>
+                  </SortableTitleItem>
+                </CSSTransition>
+              );
+            })}
+          </TransitionGroup>
+        </SortableContext>
+      </DndContext>
+    </ol>
   );
 };
 export default WatchlistTitlesList;

@@ -12,6 +12,7 @@ const Watchlist = ({ user, userWatchlists, getMovieData, setOnHomePage, setOnWat
   const [watchlist, setWatchlist] = useState(null);
   const { id } = useParams();
   const { dispatchWatchlists, isLoading: watchlistIsLoading } = useWatchlistContext();
+  // TODO use useAuthContext instead of useContext below?
   const { isLoading: userIsLoading } = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState(false);
 

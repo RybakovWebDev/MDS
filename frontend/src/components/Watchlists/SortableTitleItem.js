@@ -7,7 +7,7 @@ import { WhiteDragHandleIcon } from "../Utility/StyledComponents/StyledComponent
 
 // const animateLayoutChanges = (args) => (args.isSorting || args.wasDragging ? defaultAnimateLayoutChanges(args) : true);
 
-const SortableTitleItem = ({ id, listID, editList, nodeRef, children, listViewCells, isTabletOrMobile }) => {
+const SortableTitleItem = ({ id, listID, editList, nodeRef, children, listViewCells, isTabletOrMobile, isDragged }) => {
   const { attributes, listeners, transform, transition, setNodeRef } = useSortable({
     // animateLayoutChanges,
     id,
@@ -47,7 +47,9 @@ const SortableTitleItem = ({ id, listID, editList, nodeRef, children, listViewCe
           )}
           {children}
         </Box>
-        {!listViewCells && <Divider sx={{ m: "0.5rem 0 0.5rem 0", backgroundColor: "#595959" }} />}
+        {!listViewCells && (
+          <Divider sx={{ m: "0.5rem 0 0.5rem 0", backgroundColor: "#595959", opacity: isDragged ? 0 : 1 }} />
+        )}
       </Box>
     </li>
   );

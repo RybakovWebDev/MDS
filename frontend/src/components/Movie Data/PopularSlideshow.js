@@ -29,10 +29,14 @@ const PopularSlideshow = ({
             <img
               src={
                 el.poster_path
-                  ? `${TMDBImageBaseURL + TMDBConfigData?.images?.poster_sizes[5] + el.poster_path}`
+                  ? `${
+                      TMDBImageBaseURL +
+                      TMDBConfigData?.images?.poster_sizes[loadedImages < 10 ? 1 : 5] +
+                      el.poster_path
+                    }`
                   : personPlaceholder
               }
-              alt={`Current popular movie poster for ${el.original_title}`}
+              alt={`Movie poster for ${el.original_title}`}
               className='popular-slideshow__image'
               key={el.id + i}
               onLoad={posterLoadHandler}
@@ -46,7 +50,9 @@ const PopularSlideshow = ({
   return (
     <article className={`popular-slideshow__wrapper`}>
       <Fade in={showPopular} timeout={showPopular ? 500 : 300} easing={{ enter: "ease-in", exit: "ease-out" }}>
-        <div className='popular-slideshow__images-wrapper'>{renderPosterArray()}</div>
+        <div className={`popular-slideshow__images-wrapper${loadedImages < 25 ? " blurred" : ""}`}>
+          {renderPosterArray()}
+        </div>
       </Fade>
     </article>
   );
