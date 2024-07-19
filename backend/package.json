@@ -23,7 +23,7 @@
     "mongoose": "^6.8.4",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^2.0.20",
-    "openai": "^3.3.0",
+    "openai": "^4.52.7",
     "sharp": "^0.32.6",
     "unique-names-generator": "^4.7.1",
     "uuid": "^9.0.0"

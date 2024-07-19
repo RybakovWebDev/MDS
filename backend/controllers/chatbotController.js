@@ -1,9 +1,8 @@
-const { Configuration, OpenAIApi } = require("openai");
+const { OpenAI } = require("openai");
 
-const config = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(config);
 
 const context = [
   {
@@ -37,8 +36,8 @@ const postMessage = async (req, res, next) => {
   context.push({ role: "user", content: userMessage });
 
   try {
-    const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
       max_tokens: 200,
       temperature: 0.7,
       n: 1,

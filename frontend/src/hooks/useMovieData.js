@@ -28,7 +28,7 @@ export const useMovieData = ({ setShowMov, setInputMode, setSearchTop, setShowPo
       if (resExternalIds.data.imdb_id || resExternalIds.data.id) {
         return resExternalIds.data;
       }
-      console.log(resExternalIds);
+
       return null;
     } catch (err) {
       console.error(err);
